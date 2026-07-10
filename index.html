@@ -388,6 +388,51 @@
     font-size: 13px;
   }
 
+  /* 食材チップとメニュー提案 */
+  .chip-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
+  .ing-chip {
+    border: 1.5px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ing-chip.selected {
+    background: var(--coral);
+    border-color: var(--coral);
+    color: #fff;
+    font-weight: 700;
+  }
+  .suggest-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 18px;
+    color: var(--coral-dark);
+  }
+  .suggest-item {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 11px 14px;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+  .suggest-item .s-meal { font-size: 11px; font-weight: 700; color: var(--mint-dark); }
+  .suggest-item .s-name { font-weight: 700; display: block; }
+  .suggest-item .s-ing { font-size: 11.5px; color: var(--sub); margin-top: 2px; }
+  .suggest-item .s-ing .have { color: var(--mint-dark); font-weight: 700; }
+  .suggest-empty {
+    font-size: 13px;
+    background: var(--coral-light);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 12px;
+  }
+
   /* ===== 食事メモ ===== */
   .feel-row { display: flex; gap: 8px; margin-top: 6px; }
   .feel-btn {
@@ -627,6 +672,20 @@
       <div id="tips-list"></div>
     </div>
     <div class="card">
+      <h2>あるものでメニュー提案</h2>
+      <p class="desc">おうちにある食材をタップ（または入力）すると、整うメニューをご提案します。迷った日は「おまかせ」でどうぞ。</p>
+      <div class="chip-grid" id="ing-chips"></div>
+      <div class="field">
+        <label for="ing-free">そのほかの食材（「、」区切りで自由に）</label>
+        <input type="text" id="ing-free" placeholder="例: 小松菜、しめじ">
+      </div>
+      <div class="err" id="suggest-err"></div>
+      <button class="btn" onclick="suggestMeals()">この食材で提案してもらう</button>
+      <button class="btn mint" onclick="omakase()">🎲 おまかせで決めてもらう</button>
+      <div id="suggest-result"></div>
+    </div>
+
+    <div class="card">
       <h2>整うごはんのアイデア</h2>
       <p class="desc">特別な食材はいりません。コンビニやおうちにあるもので整えられます。</p>
       <div id="meals-list"></div>
@@ -787,6 +846,100 @@ const MEALS = [
     'ゆで卵・高カカオチョコ2かけ'
   ]}
 ];
+
+// メニュー提案用の食材チップ（id はレシピの ing と対応する正規名）
+const INGREDIENTS = [
+  { id: '卵', label: '卵' },
+  { id: '豆腐', label: '豆腐' },
+  { id: '納豆', label: '納豆' },
+  { id: '鶏むね肉', label: '鶏むね肉' },
+  { id: '豚肉', label: '豚肉' },
+  { id: 'ひき肉', label: 'ひき肉' },
+  { id: '魚', label: 'お魚' },
+  { id: 'ツナ缶', label: 'ツナ缶' },
+  { id: 'キャベツ', label: 'キャベツ' },
+  { id: 'もやし', label: 'もやし' },
+  { id: 'トマト', label: 'トマト' },
+  { id: 'きのこ', label: 'きのこ' },
+  { id: '玉ねぎ', label: '玉ねぎ' },
+  { id: '大根', label: '大根' },
+  { id: 'じゃがいも', label: 'じゃがいも' },
+  { id: 'ほうれん草', label: 'ほうれん草・小松菜' },
+  { id: 'ヨーグルト', label: 'ヨーグルト' },
+  { id: 'チーズ', label: 'チーズ' },
+  { id: 'バナナ', label: 'バナナ' },
+  { id: 'オートミール', label: 'オートミール' },
+  { id: 'ごはん', label: 'ごはん' },
+  { id: 'パン', label: 'パン' },
+  { id: '麺', label: '麺類' }
+];
+
+// 自由入力→正規名の言い換え辞書
+const ING_ALIASES = {
+  '卵': ['卵', 'たまご', '玉子'],
+  '豆腐': ['豆腐', 'とうふ'],
+  '納豆': ['納豆', 'なっとう'],
+  '鶏むね肉': ['鶏', 'とり肉', 'ささみ', 'チキン', '鳥肉'],
+  '豚肉': ['豚', 'ぶた'],
+  'ひき肉': ['ひき肉', '挽き肉', 'ひきにく', 'ミンチ'],
+  '魚': ['魚', 'さかな', '鮭', 'さけ', 'サーモン', 'さば', '鯖', 'たら', 'ぶり', 'あじ', 'いわし', 'さんま'],
+  'ツナ缶': ['ツナ', 'シーチキン'],
+  'キャベツ': ['キャベツ', 'きゃべつ', 'レタス'],
+  'もやし': ['もやし'],
+  'トマト': ['トマト'],
+  'きのこ': ['きのこ', 'しめじ', 'えのき', 'しいたけ', '椎茸', 'まいたけ', '舞茸', 'エリンギ', 'マッシュルーム'],
+  '玉ねぎ': ['玉ねぎ', 'たまねぎ', '玉葱'],
+  '大根': ['大根', 'だいこん'],
+  'じゃがいも': ['じゃがいも', 'じゃが芋', 'ポテト', '芋', 'いも'],
+  'ほうれん草': ['ほうれん草', 'ほうれんそう', '小松菜', 'こまつな', '青菜', 'チンゲン菜'],
+  'ヨーグルト': ['ヨーグルト'],
+  'チーズ': ['チーズ'],
+  'バナナ': ['バナナ'],
+  'オートミール': ['オートミール', 'オーツ'],
+  'ごはん': ['ごはん', 'ご飯', '白米', 'お米', 'ライス'],
+  'パン': ['パン', 'トースト'],
+  '麺': ['麺', 'うどん', 'そば', '蕎麦', 'パスタ', 'そうめん', 'ラーメン', 'スパゲ']
+};
+
+// 提案用レシピ（ing は INGREDIENTS の id で書く）
+const RECIPES = [
+  // 朝
+  { meal: '朝', name: '卵かけごはん＋お味噌汁＋のり', ing: ['卵', 'ごはん'] },
+  { meal: '朝', name: '納豆ごはん＋お味噌汁', ing: ['納豆', 'ごはん'] },
+  { meal: '朝', name: 'ヨーグルト＋バナナ＋オートミール', ing: ['ヨーグルト', 'バナナ', 'オートミール'] },
+  { meal: '朝', name: 'トースト＋ゆで卵＋ミニトマト', ing: ['パン', '卵', 'トマト'] },
+  { meal: '朝', name: 'チーズトースト＋ヨーグルト', ing: ['パン', 'チーズ', 'ヨーグルト'] },
+  { meal: '朝', name: '卵入りオートミールのおかゆ', ing: ['オートミール', '卵'] },
+  { meal: '朝', name: '豆腐とわかめのお味噌汁＋ごはん', ing: ['豆腐', 'ごはん'] },
+  // 昼
+  { meal: '昼', name: '鮭おにぎり＋サラダチキン＋野菜スープ', ing: ['ごはん', '魚', '鶏むね肉'] },
+  { meal: '昼', name: 'ツナと卵のチャーハン（油ひかえめ）', ing: ['ツナ缶', '卵', 'ごはん'] },
+  { meal: '昼', name: '鶏むねの照り焼き＋ごはん＋お浸し', ing: ['鶏むね肉', 'ごはん', 'ほうれん草'] },
+  { meal: '昼', name: 'お蕎麦＋温泉卵＋わかめ', ing: ['麺', '卵'] },
+  { meal: '昼', name: '野菜たっぷり豚しゃぶうどん', ing: ['麺', '豚肉', 'キャベツ'] },
+  { meal: '昼', name: '納豆キムチ豆腐丼', ing: ['納豆', '豆腐', 'ごはん'] },
+  { meal: '昼', name: 'キャベツとツナのあっさりパスタ', ing: ['麺', 'ツナ缶', 'キャベツ'] },
+  { meal: '昼', name: 'じゃがいもとひき肉のチーズ重ね焼き', ing: ['じゃがいも', 'ひき肉', 'チーズ'] },
+  // 夜
+  { meal: '夜', name: 'お豆腐と野菜のお鍋（〆は控えめに）', ing: ['豆腐', 'キャベツ', 'きのこ'] },
+  { meal: '夜', name: '焼き魚＋ごはん少なめ＋具だくさんお味噌汁', ing: ['魚', 'ごはん'] },
+  { meal: '夜', name: '豚しゃぶサラダ＋ごはん', ing: ['豚肉', 'キャベツ', 'トマト'] },
+  { meal: '夜', name: '鶏むねときのこの蒸し焼き', ing: ['鶏むね肉', 'きのこ'] },
+  { meal: '夜', name: '肉豆腐（甘さひかえめ）', ing: ['豚肉', '豆腐', '玉ねぎ'] },
+  { meal: '夜', name: 'もやしとひき肉の炒めもの', ing: ['もやし', 'ひき肉'] },
+  { meal: '夜', name: '大根と鶏むねのやさしい煮物', ing: ['大根', '鶏むね肉'] },
+  { meal: '夜', name: 'ほうれん草と卵の炒めもの＋ごはん', ing: ['ほうれん草', '卵', 'ごはん'] },
+  { meal: '夜', name: 'トマトときのこのスープ＋チーズ', ing: ['トマト', 'きのこ', 'チーズ'] },
+  { meal: '夜', name: '野菜たっぷり豚汁＋ごはん少なめ', ing: ['豚肉', '大根', 'じゃがいも'] },
+  { meal: '夜', name: '玉ねぎたっぷり親子丼（ごはん少なめ）', ing: ['卵', '鶏むね肉', '玉ねぎ', 'ごはん'] },
+  // 間食
+  { meal: '間食', name: '素焼きナッツひとつかみ', ing: [] },
+  { meal: '間食', name: 'ゆで卵1個', ing: ['卵'] },
+  { meal: '間食', name: 'チーズ1個', ing: ['チーズ'] },
+  { meal: '間食', name: 'バナナヨーグルト', ing: ['バナナ', 'ヨーグルト'] }
+];
+
+const MEAL_EMOJI = { '朝': '🌅 朝ごはん', '昼': '☀️ お昼ごはん', '夜': '🌙 夜ごはん', '間食': '🍬 間食' };
 
 // 年齢別の目標BMI範囲（厚生労働省「日本人の食事摂取基準2020」）
 function ageBmiRange(age) {
@@ -1238,6 +1391,95 @@ function renderTips() {
 }
 
 // ============================================================
+// === タブ4: あるものでメニュー提案 ===
+// ============================================================
+function renderIngChips() {
+  const grid = document.getElementById('ing-chips');
+  INGREDIENTS.forEach(ing => {
+    const chip = document.createElement('button');
+    chip.className = 'ing-chip';
+    chip.type = 'button';
+    chip.textContent = ing.label;
+    chip.dataset.ing = ing.id;
+    chip.onclick = () => chip.classList.toggle('selected');
+    grid.appendChild(chip);
+  });
+}
+
+// 選択チップ＋自由入力から、手持ち食材の正規名セットを作る
+function collectIngredients() {
+  const set = new Set();
+  document.querySelectorAll('.ing-chip.selected').forEach(c => set.add(c.dataset.ing));
+  const free = document.getElementById('ing-free').value;
+  free.split(/[、,・\s\/／]+/).map(t => t.trim()).filter(t => t.length > 0).forEach(token => {
+    for (const [id, aliases] of Object.entries(ING_ALIASES)) {
+      if (aliases.some(a => token.includes(a) || (a.length >= 2 && a.includes(token) && token.length >= 2))) {
+        set.add(id);
+        break;
+      }
+    }
+  });
+  return set;
+}
+
+function suggestMeals() {
+  const err = document.getElementById('suggest-err');
+  hideErr(err);
+  const have = collectIngredients();
+  if (have.size === 0) {
+    err.textContent = '食材をひとつタップするか、入力してみてくださいね';
+    err.classList.add('show');
+    return;
+  }
+
+  // 手持ち食材との一致数でスコアリング（一致1つ以上・足りない数が少ない順）
+  const scored = RECIPES
+    .map(r => {
+      const matched = r.ing.filter(i => have.has(i));
+      return { r, matched, missing: r.ing.filter(i => !have.has(i)) };
+    })
+    .filter(s => s.matched.length > 0)
+    .sort((a, b) => b.matched.length - a.matched.length || a.missing.length - b.missing.length);
+
+  const box = document.getElementById('suggest-result');
+  if (scored.length === 0) {
+    box.innerHTML = '<div class="suggest-empty">その食材のメニューが見つかりませんでした🙏 「🎲 おまかせ」で今日の献立を出すこともできますよ。</div>';
+    return;
+  }
+
+  const label = id => (INGREDIENTS.find(i => i.id === id) || { label: id }).label;
+  box.innerHTML = '<div class="suggest-title">🍳 この食材で作れそうなメニュー</div>' +
+    scored.slice(0, 6).map(s => `
+      <div class="suggest-item">
+        <span class="s-meal">${MEAL_EMOJI[s.r.meal]}</span>
+        <span class="s-name">${s.r.name}</span>
+        <div class="s-ing">
+          <span class="have">✓ ${s.matched.map(label).join('・')}</span>
+          ${s.missing.length > 0 ? `<span>／あとあると◎: ${s.missing.map(label).join('・')}</span>` : '<span>／ぜんぶおうちにあります◎</span>'}
+        </div>
+      </div>`).join('');
+}
+
+function omakase() {
+  hideErr(document.getElementById('suggest-err'));
+  const pick = meal => {
+    const pool = RECIPES.filter(r => r.meal === meal);
+    return pool[Math.floor(Math.random() * pool.length)];
+  };
+  const box = document.getElementById('suggest-result');
+  box.innerHTML = '<div class="suggest-title">🎲 今日のおまかせ献立</div>' +
+    ['朝', '昼', '夜', '間食'].map(m => {
+      const r = pick(m);
+      return `
+      <div class="suggest-item">
+        <span class="s-meal">${MEAL_EMOJI[m]}</span>
+        <span class="s-name">${r.name}</span>
+      </div>`;
+    }).join('') +
+    '<div class="s-ing" style="margin-top:8px; text-align:center; color:var(--sub); font-size:12px;">もう一度押すと、別の献立が出てきますよ🌸</div>';
+}
+
+// ============================================================
 // === タブ5: 食事メモ ===
 // ============================================================
 let selectedFeel = null;
@@ -1350,6 +1592,7 @@ function renderMemos() {
   prefillCalorie();
 
   renderTips();
+  renderIngChips();
   renderRecords();
   renderMemos();
 })();
