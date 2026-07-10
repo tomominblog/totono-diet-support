@@ -422,7 +422,28 @@
     font-size: 13px;
   }
   .suggest-item .s-meal { font-size: 11px; font-weight: 700; color: var(--mint-dark); }
+  .s-kcal {
+    float: right;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--mint-light);
+    color: var(--mint-dark);
+    border-radius: 999px;
+    padding: 2px 10px;
+    margin-left: 8px;
+  }
+  .meal-card .s-kcal { background: #fff; }
   .suggest-item .s-name { font-weight: 700; display: block; }
+  .suggest-total {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--coral-light);
+    border-radius: 10px;
+    padding: 9px 12px;
+    margin-top: 10px;
+  }
   .suggest-item .s-ing { font-size: 11.5px; color: var(--sub); margin-top: 2px; }
   .suggest-item .s-ing .have { color: var(--mint-dark); font-weight: 700; }
   .suggest-empty {
@@ -823,27 +844,27 @@ const TIPS = [
   { t: '⚠️ 極端な糖質抜き・置き換えの連続はおすすめしません', d: '続かない方法は、方法のほうが悪いんです。ゆるやかが最強。' }
 ];
 
-// 整うごはんのアイデア
+// 整うごはんのアイデア（kcal は一般的な1人前での目安）
 const MEALS = [
   { group: '🌅 朝ごはん', items: [
-    '卵かけごはん＋お味噌汁＋のり',
-    'ヨーグルト＋バナナ＋オートミール',
-    'トースト＋ゆで卵＋ミニトマト'
+    { n: '卵かけごはん＋お味噌汁＋のり', kcal: '約350kcal' },
+    { n: 'ヨーグルト＋バナナ＋オートミール', kcal: '約260kcal' },
+    { n: 'トースト＋ゆで卵＋ミニトマト', kcal: '約260kcal' }
   ]},
   { group: '☀️ お昼ごはん', items: [
-    '鮭おにぎり＋サラダチキン＋野菜スープ',
-    'ごはん＋鶏むねの照り焼き＋お浸し',
-    'お蕎麦＋温泉卵＋わかめ'
+    { n: '鮭おにぎり＋サラダチキン＋野菜スープ', kcal: '約340kcal' },
+    { n: 'ごはん＋鶏むねの照り焼き＋お浸し', kcal: '約500kcal' },
+    { n: 'お蕎麦＋温泉卵＋わかめ', kcal: '約400kcal' }
   ]},
   { group: '🌙 夜ごはん', items: [
-    'お豆腐と野菜のお鍋（〆は控えめに）',
-    '焼き魚＋ごはん少なめ＋具だくさんお味噌汁',
-    '豚しゃぶサラダ＋ごはん＋きのこのお吸い物'
+    { n: 'お豆腐と野菜のお鍋（〆は控えめに）', kcal: '約250kcal' },
+    { n: '焼き魚＋ごはん少なめ＋具だくさんお味噌汁', kcal: '約400kcal' },
+    { n: '豚しゃぶサラダ＋ごはん＋きのこのお吸い物', kcal: '約440kcal' }
   ]},
   { group: '🍬 間食（小腹がすいたら）', items: [
-    '素焼きナッツひとつかみ',
-    'ヨーグルト or チーズ1個',
-    'ゆで卵・高カカオチョコ2かけ'
+    { n: '素焼きナッツひとつかみ', kcal: '約150kcal' },
+    { n: 'ヨーグルト or チーズ1個', kcal: '約60〜100kcal' },
+    { n: 'ゆで卵・高カカオチョコ2かけ', kcal: '約60〜80kcal' }
   ]}
 ];
 
@@ -901,42 +922,42 @@ const ING_ALIASES = {
   '麺': ['麺', 'うどん', 'そば', '蕎麦', 'パスタ', 'そうめん', 'ラーメン', 'スパゲ']
 };
 
-// 提案用レシピ（ing は INGREDIENTS の id で書く）
+// 提案用レシピ（ing は INGREDIENTS の id、kcal は一般的な1人前での目安）
 const RECIPES = [
   // 朝
-  { meal: '朝', name: '卵かけごはん＋お味噌汁＋のり', ing: ['卵', 'ごはん'] },
-  { meal: '朝', name: '納豆ごはん＋お味噌汁', ing: ['納豆', 'ごはん'] },
-  { meal: '朝', name: 'ヨーグルト＋バナナ＋オートミール', ing: ['ヨーグルト', 'バナナ', 'オートミール'] },
-  { meal: '朝', name: 'トースト＋ゆで卵＋ミニトマト', ing: ['パン', '卵', 'トマト'] },
-  { meal: '朝', name: 'チーズトースト＋ヨーグルト', ing: ['パン', 'チーズ', 'ヨーグルト'] },
-  { meal: '朝', name: '卵入りオートミールのおかゆ', ing: ['オートミール', '卵'] },
-  { meal: '朝', name: '豆腐とわかめのお味噌汁＋ごはん', ing: ['豆腐', 'ごはん'] },
+  { meal: '朝', name: '卵かけごはん＋お味噌汁＋のり', ing: ['卵', 'ごはん'], kcal: 350 },
+  { meal: '朝', name: '納豆ごはん＋お味噌汁', ing: ['納豆', 'ごはん'], kcal: 370 },
+  { meal: '朝', name: 'ヨーグルト＋バナナ＋オートミール', ing: ['ヨーグルト', 'バナナ', 'オートミール'], kcal: 260 },
+  { meal: '朝', name: 'トースト＋ゆで卵＋ミニトマト', ing: ['パン', '卵', 'トマト'], kcal: 260 },
+  { meal: '朝', name: 'チーズトースト＋ヨーグルト', ing: ['パン', 'チーズ', 'ヨーグルト'], kcal: 280 },
+  { meal: '朝', name: '卵入りオートミールのおかゆ', ing: ['オートミール', '卵'], kcal: 200 },
+  { meal: '朝', name: '豆腐とわかめのお味噌汁＋ごはん', ing: ['豆腐', 'ごはん'], kcal: 300 },
   // 昼
-  { meal: '昼', name: '鮭おにぎり＋サラダチキン＋野菜スープ', ing: ['ごはん', '魚', '鶏むね肉'] },
-  { meal: '昼', name: 'ツナと卵のチャーハン（油ひかえめ）', ing: ['ツナ缶', '卵', 'ごはん'] },
-  { meal: '昼', name: '鶏むねの照り焼き＋ごはん＋お浸し', ing: ['鶏むね肉', 'ごはん', 'ほうれん草'] },
-  { meal: '昼', name: 'お蕎麦＋温泉卵＋わかめ', ing: ['麺', '卵'] },
-  { meal: '昼', name: '野菜たっぷり豚しゃぶうどん', ing: ['麺', '豚肉', 'キャベツ'] },
-  { meal: '昼', name: '納豆キムチ豆腐丼', ing: ['納豆', '豆腐', 'ごはん'] },
-  { meal: '昼', name: 'キャベツとツナのあっさりパスタ', ing: ['麺', 'ツナ缶', 'キャベツ'] },
-  { meal: '昼', name: 'じゃがいもとひき肉のチーズ重ね焼き', ing: ['じゃがいも', 'ひき肉', 'チーズ'] },
+  { meal: '昼', name: '鮭おにぎり＋サラダチキン＋野菜スープ', ing: ['ごはん', '魚', '鶏むね肉'], kcal: 340 },
+  { meal: '昼', name: 'ツナと卵のチャーハン（油ひかえめ）', ing: ['ツナ缶', '卵', 'ごはん'], kcal: 500 },
+  { meal: '昼', name: '鶏むねの照り焼き＋ごはん＋お浸し', ing: ['鶏むね肉', 'ごはん', 'ほうれん草'], kcal: 500 },
+  { meal: '昼', name: 'お蕎麦＋温泉卵＋わかめ', ing: ['麺', '卵'], kcal: 400 },
+  { meal: '昼', name: '野菜たっぷり豚しゃぶうどん', ing: ['麺', '豚肉', 'キャベツ'], kcal: 450 },
+  { meal: '昼', name: '納豆キムチ豆腐丼', ing: ['納豆', '豆腐', 'ごはん'], kcal: 420 },
+  { meal: '昼', name: 'キャベツとツナのあっさりパスタ', ing: ['麺', 'ツナ缶', 'キャベツ'], kcal: 460 },
+  { meal: '昼', name: 'じゃがいもとひき肉のチーズ重ね焼き', ing: ['じゃがいも', 'ひき肉', 'チーズ'], kcal: 430 },
   // 夜
-  { meal: '夜', name: 'お豆腐と野菜のお鍋（〆は控えめに）', ing: ['豆腐', 'キャベツ', 'きのこ'] },
-  { meal: '夜', name: '焼き魚＋ごはん少なめ＋具だくさんお味噌汁', ing: ['魚', 'ごはん'] },
-  { meal: '夜', name: '豚しゃぶサラダ＋ごはん', ing: ['豚肉', 'キャベツ', 'トマト'] },
-  { meal: '夜', name: '鶏むねときのこの蒸し焼き', ing: ['鶏むね肉', 'きのこ'] },
-  { meal: '夜', name: '肉豆腐（甘さひかえめ）', ing: ['豚肉', '豆腐', '玉ねぎ'] },
-  { meal: '夜', name: 'もやしとひき肉の炒めもの', ing: ['もやし', 'ひき肉'] },
-  { meal: '夜', name: '大根と鶏むねのやさしい煮物', ing: ['大根', '鶏むね肉'] },
-  { meal: '夜', name: 'ほうれん草と卵の炒めもの＋ごはん', ing: ['ほうれん草', '卵', 'ごはん'] },
-  { meal: '夜', name: 'トマトときのこのスープ＋チーズ', ing: ['トマト', 'きのこ', 'チーズ'] },
-  { meal: '夜', name: '野菜たっぷり豚汁＋ごはん少なめ', ing: ['豚肉', '大根', 'じゃがいも'] },
-  { meal: '夜', name: '玉ねぎたっぷり親子丼（ごはん少なめ）', ing: ['卵', '鶏むね肉', '玉ねぎ', 'ごはん'] },
+  { meal: '夜', name: 'お豆腐と野菜のお鍋（〆は控えめに）', ing: ['豆腐', 'キャベツ', 'きのこ'], kcal: 250 },
+  { meal: '夜', name: '焼き魚＋ごはん少なめ＋具だくさんお味噌汁', ing: ['魚', 'ごはん'], kcal: 400 },
+  { meal: '夜', name: '豚しゃぶサラダ＋ごはん', ing: ['豚肉', 'キャベツ', 'トマト'], kcal: 430 },
+  { meal: '夜', name: '鶏むねときのこの蒸し焼き', ing: ['鶏むね肉', 'きのこ'], kcal: 230 },
+  { meal: '夜', name: '肉豆腐（甘さひかえめ）', ing: ['豚肉', '豆腐', '玉ねぎ'], kcal: 380 },
+  { meal: '夜', name: 'もやしとひき肉の炒めもの', ing: ['もやし', 'ひき肉'], kcal: 280 },
+  { meal: '夜', name: '大根と鶏むねのやさしい煮物', ing: ['大根', '鶏むね肉'], kcal: 230 },
+  { meal: '夜', name: 'ほうれん草と卵の炒めもの＋ごはん', ing: ['ほうれん草', '卵', 'ごはん'], kcal: 430 },
+  { meal: '夜', name: 'トマトときのこのスープ＋チーズ', ing: ['トマト', 'きのこ', 'チーズ'], kcal: 180 },
+  { meal: '夜', name: '野菜たっぷり豚汁＋ごはん少なめ', ing: ['豚肉', '大根', 'じゃがいも'], kcal: 340 },
+  { meal: '夜', name: '玉ねぎたっぷり親子丼（ごはん少なめ）', ing: ['卵', '鶏むね肉', '玉ねぎ', 'ごはん'], kcal: 420 },
   // 間食
-  { meal: '間食', name: '素焼きナッツひとつかみ', ing: [] },
-  { meal: '間食', name: 'ゆで卵1個', ing: ['卵'] },
-  { meal: '間食', name: 'チーズ1個', ing: ['チーズ'] },
-  { meal: '間食', name: 'バナナヨーグルト', ing: ['バナナ', 'ヨーグルト'] }
+  { meal: '間食', name: '素焼きナッツひとつかみ', ing: [], kcal: 150 },
+  { meal: '間食', name: 'ゆで卵1個', ing: ['卵'], kcal: 80 },
+  { meal: '間食', name: 'チーズ1個', ing: ['チーズ'], kcal: 60 },
+  { meal: '間食', name: 'バナナヨーグルト', ing: ['バナナ', 'ヨーグルト'], kcal: 150 }
 ];
 
 const MEAL_EMOJI = { '朝': '🌅 朝ごはん', '昼': '☀️ お昼ごはん', '夜': '🌙 夜ごはん', '間食': '🍬 間食' };
@@ -1387,7 +1408,8 @@ function renderTips() {
     `<div class="tip-card"><b>${t.t}</b><span>${t.d}</span></div>`).join('');
   document.getElementById('meals-list').innerHTML = MEALS.map(g =>
     `<div class="meal-group-title">${g.group}</div>` +
-    g.items.map(i => `<div class="meal-card">${i}</div>`).join('')).join('');
+    g.items.map(i => `<div class="meal-card"><span class="s-kcal">${i.kcal}</span>${i.n}</div>`).join('')).join('') +
+    '<div class="s-ing" style="margin-top:10px; text-align:center; color:var(--sub); font-size:11px;">※カロリーは一般的な1人前の分量での目安です</div>';
 }
 
 // ============================================================
@@ -1451,13 +1473,15 @@ function suggestMeals() {
   box.innerHTML = '<div class="suggest-title">🍳 この食材で作れそうなメニュー</div>' +
     scored.slice(0, 6).map(s => `
       <div class="suggest-item">
+        <span class="s-kcal">約${s.r.kcal}kcal</span>
         <span class="s-meal">${MEAL_EMOJI[s.r.meal]}</span>
         <span class="s-name">${s.r.name}</span>
         <div class="s-ing">
           <span class="have">✓ ${s.matched.map(label).join('・')}</span>
           ${s.missing.length > 0 ? `<span>／あとあると◎: ${s.missing.map(label).join('・')}</span>` : '<span>／ぜんぶおうちにあります◎</span>'}
         </div>
-      </div>`).join('');
+      </div>`).join('') +
+    '<div class="s-ing" style="margin-top:8px; text-align:center; color:var(--sub); font-size:11px;">※カロリーは一般的な1人前の分量での目安です</div>';
 }
 
 function omakase() {
@@ -1467,16 +1491,17 @@ function omakase() {
     return pool[Math.floor(Math.random() * pool.length)];
   };
   const box = document.getElementById('suggest-result');
+  const picks = ['朝', '昼', '夜', '間食'].map(m => ({ m, r: pick(m) }));
+  const total = picks.reduce((sum, p) => sum + p.r.kcal, 0);
   box.innerHTML = '<div class="suggest-title">🎲 今日のおまかせ献立</div>' +
-    ['朝', '昼', '夜', '間食'].map(m => {
-      const r = pick(m);
-      return `
+    picks.map(p => `
       <div class="suggest-item">
-        <span class="s-meal">${MEAL_EMOJI[m]}</span>
-        <span class="s-name">${r.name}</span>
-      </div>`;
-    }).join('') +
-    '<div class="s-ing" style="margin-top:8px; text-align:center; color:var(--sub); font-size:12px;">もう一度押すと、別の献立が出てきますよ🌸</div>';
+        <span class="s-kcal">約${p.r.kcal}kcal</span>
+        <span class="s-meal">${MEAL_EMOJI[p.m]}</span>
+        <span class="s-name">${p.r.name}</span>
+      </div>`).join('') +
+    `<div class="suggest-total">1日の合計 約${total.toLocaleString()}kcal</div>` +
+    '<div class="s-ing" style="margin-top:8px; text-align:center; color:var(--sub); font-size:12px;">もう一度押すと別の献立が出てきます🌸 カロリーは一般的な1人前での目安です。<br>「🍽️ カロリー計算」タブのあなたの目安と見くらべてみてくださいね</div>';
 }
 
 // ============================================================
