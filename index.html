@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#E8A0A0">
+<meta name="description" content="ととのサロンのダイエットサポート。体重チェック・体重記録・カロリー計算・食べ方のコツを、がんばらないトーンでサポートします。">
+<title>整えるダイエットサポート | ととのサロン</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --coral: #E8A0A0;
+    --coral-dark: #D68A8A;
+    --coral-light: #FBEDED;
+    --mint: #A0C8C0;
+    --mint-dark: #7FADA3;
+    --mint-light: #EAF4F2;
+    --bg: #FDF9F7;
+    --card: #FFFFFF;
+    --text: #333333;
+    --sub: #8A817D;
+    --border: #F0E4E0;
+    --radius: 16px;
+    --shadow: 0 2px 10px rgba(216, 160, 160, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 { font-family: 'Noto Sans JP', sans-serif; font-weight: 700; }
+
+  .wrap { max-width: 600px; margin: 0 auto; padding: 0 16px 40px; }
+
+  /* ===== ヘッダー ===== */
+  header {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #FBEDED 0%, #FDF9F7 60%, #EAF4F2 100%);
+    padding: 34px 20px 26px;
+    text-align: center;
+  }
+  .blob {
+    position: absolute;
+    border-radius: 46% 54% 60% 40% / 50% 44% 56% 50%;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .blob-1 { width: 160px; height: 150px; background: var(--coral); top: -70px; left: -50px; }
+  .blob-2 { width: 130px; height: 120px; background: var(--mint); bottom: -60px; right: -40px; }
+  .blob-3 { width: 60px; height: 56px; background: var(--mint); top: 14px; right: 34px; opacity: 0.35; }
+  header .salon-name {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--coral-dark);
+    font-weight: 700;
+  }
+  header h1 { font-size: 22px; margin-top: 4px; }
+  header p.lead { font-size: 13px; color: var(--sub); margin-top: 6px; }
+
+  /* ===== タブバー ===== */
+  nav.tabs {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 16px;
+    scrollbar-width: none;
+  }
+  nav.tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex: 0 0 auto;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--coral);
+    border-color: var(--coral);
+    color: #fff;
+  }
+
+  /* ===== パネル・カード共通 ===== */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-top: 16px;
+  }
+  .card h2 {
+    font-size: 16px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card h2::before {
+    content: "";
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--coral);
+    flex: 0 0 auto;
+  }
+  .card p.desc { font-size: 13px; color: var(--sub); margin-bottom: 12px; }
+
+  /* ===== フォーム ===== */
+  .field { margin-top: 12px; }
+  .field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .field input[type="number"],
+  .field input[type="date"],
+  .field input[type="text"],
+  .field textarea,
+  .field select {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 16px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    color: var(--text);
+    background: #fff;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    outline: none;
+    border-color: var(--mint);
+  }
+  .field .unit { font-size: 12px; color: var(--sub); margin-left: 4px; font-weight: 400; }
+  .field-row { display: flex; gap: 10px; }
+  .field-row .field { flex: 1; }
+  .err {
+    display: none;
+    font-size: 12px;
+    color: #C46A6A;
+    background: var(--coral-light);
+    border-radius: 8px;
+    padding: 6px 10px;
+    margin-top: 6px;
+  }
+  .err.show { display: block; }
+
+  .btn {
+    display: block;
+    width: 100%;
+    margin-top: 18px;
+    background: var(--coral);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: var(--coral-dark); }
+  .btn.mint { background: var(--mint-dark); }
+  .btn.mint:hover { background: #6E9C92; }
+  .btn.small { width: auto; padding: 8px 20px; font-size: 13px; margin-top: 10px; }
+
+  /* 性別・活動量ラジオカード */
+  .radio-cards { display: grid; gap: 8px; margin-top: 6px; }
+  .radio-cards.two { grid-template-columns: 1fr 1fr; }
+  .radio-cards label {
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    background: #fff;
+    transition: all 0.15s;
+  }
+  .radio-cards input { display: none; }
+  .radio-cards label:has(input:checked),
+  .radio-cards label.checked {
+    border-color: var(--mint-dark);
+    background: var(--mint-light);
+  }
+  .radio-cards .r-title { font-weight: 700; display: block; }
+  .radio-cards .r-desc { font-size: 11px; color: var(--sub); display: block; }
+
+  /* ===== 結果表示 ===== */
+  .result-area { display: none; }
+  .result-area.show { display: block; }
+
+  .bmi-hero {
+    text-align: center;
+    background: linear-gradient(135deg, var(--coral-light), var(--mint-light));
+    border-radius: var(--radius);
+    padding: 22px 16px;
+    margin-top: 16px;
+  }
+  .bmi-hero .label { font-size: 12px; color: var(--sub); font-weight: 700; }
+  .bmi-hero .value { font-size: 42px; font-weight: 700; font-family: 'Noto Sans JP', sans-serif; line-height: 1.2; }
+  .bmi-hero .value small { font-size: 15px; font-weight: 700; }
+  .bmi-hero .headline { font-size: 15px; font-weight: 700; margin-top: 6px; }
+  .bmi-hero .official { font-size: 11px; color: var(--sub); margin-top: 2px; }
+
+  .weight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .w-card {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+  }
+  .w-card.highlight { border-color: var(--mint-dark); background: var(--mint-light); }
+  .w-card .w-name { font-size: 12px; font-weight: 700; }
+  .w-card .w-bmi { font-size: 10px; color: var(--sub); }
+  .w-card .w-val { font-size: 19px; font-weight: 700; font-family: 'Noto Sans JP', sans-serif; margin-top: 2px; }
+  .w-card .w-val small { font-size: 11px; }
+  .w-card .w-note { font-size: 10px; color: #C46A6A; margin-top: 4px; line-height: 1.4; }
+
+  .advice-box {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-top: 16px;
+  }
+  .advice-box .a-headline {
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--coral-dark);
+  }
+  .advice-box .a-empathy { font-size: 13px; margin-top: 8px; }
+  .advice-box ul { list-style: none; margin-top: 12px; }
+  .advice-box ul li {
+    font-size: 13px;
+    background: var(--mint-light);
+    border-radius: 10px;
+    padding: 9px 12px;
+    margin-top: 8px;
+  }
+  .advice-box .a-note {
+    font-size: 12.5px;
+    background: var(--coral-light);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 12px;
+  }
+  .advice-box .a-over50 {
+    font-size: 12.5px;
+    background: #FFF6E5;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 10px;
+  }
+
+  /* ===== 体重記録 ===== */
+  .chart-box { margin-top: 12px; }
+  .chart-box svg { width: 100%; height: auto; display: block; }
+  .chart-empty {
+    text-align: center;
+    font-size: 13px;
+    color: var(--sub);
+    background: var(--mint-light);
+    border-radius: 12px;
+    padding: 26px 16px;
+    margin-top: 12px;
+  }
+  .diff-msg {
+    font-size: 13px;
+    text-align: center;
+    background: var(--coral-light);
+    border-radius: 10px;
+    padding: 9px 12px;
+    margin-top: 12px;
+  }
+  .rec-list { margin-top: 8px; }
+  .rec-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 9px 14px;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+  .rec-item .rec-date { color: var(--sub); font-size: 12px; }
+  .rec-item .rec-weight { font-weight: 700; font-family: 'Noto Sans JP', sans-serif; }
+  .del-btn {
+    border: none;
+    background: none;
+    color: var(--sub);
+    font-size: 15px;
+    cursor: pointer;
+    padding: 4px 6px;
+  }
+  .del-btn:hover { color: #C46A6A; }
+
+  /* ===== カロリー結果 ===== */
+  .kcal-steps { margin-top: 12px; }
+  .kcal-step {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px dashed var(--border);
+    padding: 9px 4px;
+    font-size: 13px;
+  }
+  .kcal-step .k-val { font-weight: 700; font-family: 'Noto Sans JP', sans-serif; font-size: 16px; }
+  .kcal-target {
+    text-align: center;
+    background: linear-gradient(135deg, var(--mint-light), var(--coral-light));
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-top: 14px;
+  }
+  .kcal-target .label { font-size: 12px; color: var(--sub); font-weight: 700; }
+  .kcal-target .value { font-size: 34px; font-weight: 700; font-family: 'Noto Sans JP', sans-serif; }
+  .kcal-target .value small { font-size: 14px; }
+  .guard-note {
+    font-size: 12.5px;
+    background: #FFF6E5;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 10px;
+    display: none;
+  }
+  .guard-note.show { display: block; }
+  .pfc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+  .pfc-card {
+    text-align: center;
+    border-radius: 12px;
+    padding: 14px 6px;
+  }
+  .pfc-card.p { background: var(--coral-light); }
+  .pfc-card.f { background: #FFF6E5; }
+  .pfc-card.c { background: var(--mint-light); }
+  .pfc-card .p-name { font-size: 11px; font-weight: 700; }
+  .pfc-card .p-val { font-size: 21px; font-weight: 700; font-family: 'Noto Sans JP', sans-serif; }
+  .pfc-card .p-val small { font-size: 11px; }
+  .pfc-card .p-pct { font-size: 10px; color: var(--sub); }
+
+  /* ===== コツ・食事アイデア ===== */
+  .tip-card {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 11px 14px;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+  .tip-card b { display: block; font-size: 13px; }
+  .tip-card span { font-size: 12px; color: var(--sub); }
+  .meal-group-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 16px;
+    color: var(--mint-dark);
+  }
+  .meal-card {
+    background: var(--mint-light);
+    border-radius: 10px;
+    padding: 9px 12px;
+    margin-top: 6px;
+    font-size: 13px;
+  }
+
+  /* ===== 食事メモ ===== */
+  .feel-row { display: flex; gap: 8px; margin-top: 6px; }
+  .feel-btn {
+    font-size: 22px;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    width: 46px; height: 46px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .feel-btn.selected { border-color: var(--coral); background: var(--coral-light); }
+  .memo-item {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 8px;
+  }
+  .memo-item .memo-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--sub);
+  }
+  .memo-item .memo-text { font-size: 13px; margin-top: 4px; white-space: pre-wrap; word-break: break-word; }
+
+  .storage-err {
+    display: none;
+    font-size: 12.5px;
+    background: var(--coral-light);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 10px;
+  }
+  .storage-err.show { display: block; }
+
+  /* ===== フッター ===== */
+  footer {
+    margin-top: 36px;
+    padding: 24px 20px 34px;
+    background: var(--mint-light);
+    text-align: center;
+  }
+  footer .f-inner { max-width: 600px; margin: 0 auto; }
+  footer h3 { font-size: 13px; margin-bottom: 8px; }
+  footer p { font-size: 11.5px; color: var(--sub); line-height: 1.8; text-align: left; }
+  footer .copyright { text-align: center; margin-top: 16px; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="salon-name">totono サロン</div>
+  <h1>🌸 整えるダイエットサポート</h1>
+  <p class="lead">がんばらなくて大丈夫。あなたのペースで、少しずつ。</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="check" onclick="switchTab('check')">🌸 体重チェック</button>
+  <button class="tab-btn" data-tab="record" onclick="switchTab('record')">📈 体重記録</button>
+  <button class="tab-btn" data-tab="cal" onclick="switchTab('cal')">🍽️ カロリー計算</button>
+  <button class="tab-btn" data-tab="tips" onclick="switchTab('tips')">💡 食べ方のコツ</button>
+  <button class="tab-btn" data-tab="memo" onclick="switchTab('memo')">📝 食事メモ</button>
+</nav>
+
+<div class="wrap">
+
+  <!-- ============ タブ1: 体重チェック ============ -->
+  <section class="panel active" id="panel-check">
+    <div class="card">
+      <h2>あなたの体重をチェック</h2>
+      <p class="desc">身長・体重・年齢を入れると、BMIと目安になる体重がわかります。数字は「良い・悪い」ではなく、いまの自分を知るためのものです。</p>
+      <div class="field-row">
+        <div class="field">
+          <label for="chk-height">身長<span class="unit">cm</span></label>
+          <input type="number" id="chk-height" inputmode="decimal" placeholder="例: 158">
+        </div>
+        <div class="field">
+          <label for="chk-weight">体重<span class="unit">kg</span></label>
+          <input type="number" id="chk-weight" inputmode="decimal" placeholder="例: 52.5">
+        </div>
+      </div>
+      <div class="field">
+        <label for="chk-age">年齢<span class="unit">歳</span></label>
+        <input type="number" id="chk-age" inputmode="numeric" placeholder="例: 42">
+      </div>
+      <div class="err" id="chk-err"></div>
+      <button class="btn" onclick="runCheck()">チェックする</button>
+    </div>
+
+    <div class="result-area" id="chk-result">
+      <div class="bmi-hero">
+        <div class="label">あなたのBMI</div>
+        <div class="value" id="chk-bmi"></div>
+        <div class="headline" id="chk-headline"></div>
+        <div class="official" id="chk-official"></div>
+      </div>
+      <div class="weight-grid" id="chk-weights"></div>
+      <div class="advice-box" id="chk-advice"></div>
+    </div>
+  </section>
+
+  <!-- ============ タブ2: 体重記録 ============ -->
+  <section class="panel" id="panel-record">
+    <div class="card">
+      <h2>今日の体重を記録</h2>
+      <p class="desc">朝トイレのあと、同じ条件で測るのがおすすめです。同じ日付で保存すると上書きされます。</p>
+      <div class="field-row">
+        <div class="field">
+          <label for="rec-date">日付</label>
+          <input type="date" id="rec-date">
+        </div>
+        <div class="field">
+          <label for="rec-weight">体重<span class="unit">kg</span></label>
+          <input type="number" id="rec-weight" inputmode="decimal" placeholder="例: 52.5">
+        </div>
+      </div>
+      <div class="err" id="rec-err"></div>
+      <button class="btn" onclick="saveRecord()">記録する</button>
+      <div class="storage-err" id="rec-storage-err">このブラウザでは保存ができないようです。プライベートモードをオフにすると使えることがあります🌸</div>
+    </div>
+
+    <div class="card">
+      <h2>体重の推移</h2>
+      <p class="desc">直近30件の記録をグラフで表示します。体重は毎日の点ではなく、1週間の流れで見てあげてくださいね。</p>
+      <div class="field-row" style="align-items: flex-end;">
+        <div class="field" style="margin-top:0;">
+          <label for="rec-goal">目標体重（任意）<span class="unit">kg</span></label>
+          <input type="number" id="rec-goal" inputmode="decimal" placeholder="例: 50">
+        </div>
+        <button class="btn mint small" style="flex:0 0 auto; margin-top:0;" onclick="saveGoal()">設定</button>
+      </div>
+      <div class="err" id="goal-err"></div>
+      <div class="chart-box" id="rec-chart"></div>
+      <div class="diff-msg" id="rec-diff" style="display:none;"></div>
+    </div>
+
+    <div class="card">
+      <h2>記録一覧</h2>
+      <div class="rec-list" id="rec-list"></div>
+    </div>
+  </section>
+
+  <!-- ============ タブ3: カロリー計算 ============ -->
+  <section class="panel" id="panel-cal">
+    <div class="card">
+      <h2>1日の目安カロリーとPFC</h2>
+      <p class="desc">あなたの基礎代謝から、無理のない1日の目安カロリーと栄養バランス（タンパク質・脂質・炭水化物）を計算します。基礎代謝より下げないのが「整える」コツです。</p>
+      <div class="field-row">
+        <div class="field">
+          <label for="cal-age">年齢<span class="unit">歳</span></label>
+          <input type="number" id="cal-age" inputmode="numeric" placeholder="例: 42">
+        </div>
+        <div class="field">
+          <label>性別</label>
+          <div class="radio-cards two" style="margin-top:0;">
+            <label><input type="radio" name="cal-sex" value="female" checked><span class="r-title">女性</span></label>
+            <label><input type="radio" name="cal-sex" value="male"><span class="r-title">男性</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="cal-height">身長<span class="unit">cm</span></label>
+          <input type="number" id="cal-height" inputmode="decimal" placeholder="例: 158">
+        </div>
+        <div class="field">
+          <label for="cal-weight">体重<span class="unit">kg</span></label>
+          <input type="number" id="cal-weight" inputmode="decimal" placeholder="例: 52.5">
+        </div>
+      </div>
+      <div class="field">
+        <label>ふだんの活動量</label>
+        <div class="radio-cards">
+          <label><input type="radio" name="cal-act" value="1.2" checked>
+            <span class="r-title">🪑 デスクワーク中心</span>
+            <span class="r-desc">運動はほとんどしない・座っている時間が長い</span></label>
+          <label><input type="radio" name="cal-act" value="1.375">
+            <span class="r-title">🚶 軽く体を動かす</span>
+            <span class="r-desc">週1〜3回の軽い運動・お散歩など</span></label>
+          <label><input type="radio" name="cal-act" value="1.55">
+            <span class="r-title">🏃 よく動く</span>
+            <span class="r-desc">週3〜5回の運動・立ち仕事が多い</span></label>
+          <label><input type="radio" name="cal-act" value="1.725">
+            <span class="r-title">💪 とても活動的</span>
+            <span class="r-desc">ほぼ毎日の運動・体を動かすお仕事</span></label>
+        </div>
+      </div>
+      <div class="err" id="cal-err"></div>
+      <button class="btn" onclick="runCalorie()">計算する</button>
+    </div>
+
+    <div class="result-area" id="cal-result">
+      <div class="card">
+        <h2>計算結果</h2>
+        <div class="kcal-steps">
+          <div class="kcal-step"><span>基礎代謝（生きているだけで使うエネルギー）</span><span class="k-val" id="cal-bmr"></span></div>
+          <div class="kcal-step"><span>1日に消費するエネルギーの目安</span><span class="k-val" id="cal-tdee"></span></div>
+        </div>
+        <div class="kcal-target">
+          <div class="label">あなたの1日のやさしい目安</div>
+          <div class="value" id="cal-target"></div>
+        </div>
+        <div class="guard-note" id="cal-guard"></div>
+        <div class="pfc-grid">
+          <div class="pfc-card p">
+            <div class="p-name">タンパク質</div>
+            <div class="p-val" id="cal-p"></div>
+            <div class="p-pct">20%</div>
+          </div>
+          <div class="pfc-card f">
+            <div class="p-name">脂質</div>
+            <div class="p-val" id="cal-f"></div>
+            <div class="p-pct">25%</div>
+          </div>
+          <div class="pfc-card c">
+            <div class="p-name">炭水化物</div>
+            <div class="p-val" id="cal-c"></div>
+            <div class="p-pct">55%</div>
+          </div>
+        </div>
+        <div class="guard-note" id="cal-protein-note"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ タブ4: 食べ方のコツ ============ -->
+  <section class="panel" id="panel-tips">
+    <div class="card">
+      <h2>整える食べ方のコツ</h2>
+      <p class="desc">全部やらなくて大丈夫。「これならできそう」を1つだけ選んで、今日から始めてみてくださいね。</p>
+      <div id="tips-list"></div>
+    </div>
+    <div class="card">
+      <h2>整うごはんのアイデア</h2>
+      <p class="desc">特別な食材はいりません。コンビニやおうちにあるもので整えられます。</p>
+      <div id="meals-list"></div>
+    </div>
+  </section>
+
+  <!-- ============ タブ5: 食事メモ ============ -->
+  <section class="panel" id="panel-memo">
+    <div class="card">
+      <h2>今日の食事メモ</h2>
+      <p class="desc">食べたものと、そのときの気分をゆるっと残しましょう。記録は「反省」ではなく「観察」でOKです。</p>
+      <div class="field">
+        <label for="memo-date">日付</label>
+        <input type="date" id="memo-date">
+      </div>
+      <div class="field">
+        <label for="memo-text">食べたもの・気づいたこと</label>
+        <textarea id="memo-text" rows="3" placeholder="例: 朝はヨーグルトとバナナ。お昼は外食でパスタ。夜は野菜スープにした。"></textarea>
+      </div>
+      <div class="field">
+        <label>今日の気分（任意）</label>
+        <div class="feel-row" id="feel-row">
+          <button class="feel-btn" data-feel="😊" onclick="pickFeel(this)">😊</button>
+          <button class="feel-btn" data-feel="🙂" onclick="pickFeel(this)">🙂</button>
+          <button class="feel-btn" data-feel="😐" onclick="pickFeel(this)">😐</button>
+          <button class="feel-btn" data-feel="😔" onclick="pickFeel(this)">😔</button>
+        </div>
+      </div>
+      <div class="err" id="memo-err"></div>
+      <button class="btn" onclick="saveMemo()">保存する</button>
+      <div class="storage-err" id="memo-storage-err">このブラウザでは保存ができないようです。プライベートモードをオフにすると使えることがあります🌸</div>
+    </div>
+
+    <div class="card">
+      <h2>これまでのメモ</h2>
+      <div id="memo-list"></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="f-inner">
+    <h3>⚠️ ご利用にあたって</h3>
+    <p>
+      ・このツールの数字は一般的な計算式による「目安」です。体質や体調には個人差があります。<br>
+      ・妊娠中・授乳中の方、持病のある方、摂食障害のご経験がある方は、必ずお医者さんと相談しながらご利用ください。<br>
+      ・極端な減量はおすすめしません。体調がすぐれない日は、お休みして大丈夫です。<br>
+      ・記録データはこの端末のブラウザにだけ保存されます。ほかの人に送信されることはありません。
+    </p>
+    <div class="copyright">© totono サロン</div>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// === データ定義 ===
+// 文言の修正はこのセクションだけで完結します（ロジックに触れなくてOK）
+// ============================================================
+
+// 判定カテゴリ別の食事アドバイス
+const ADVICE = {
+  underweight: {
+    headline: 'ふんわり増やして、整えていきましょう',
+    empathy: 'いまは減らす時期ではありません。少なめの体重なので、まずは食べる力と体力をやさしく育てていきましょう。',
+    tips: [
+      '✅ 3食を抜かずに。少量ずつでも「回数」を大切に',
+      '✅ 毎食どれか1品、タンパク質を（卵・お豆腐・お魚・お肉）',
+      '✅ 間食におにぎり・バナナ・ヨーグルトをプラス',
+      '✅ 睡眠をしっかり。眠れると食欲も整います'
+    ],
+    note: '⚠️ 急に体重が減った・食欲がわかない日が続くときは、がまんせず早めにお医者さんに相談してくださいね。'
+  },
+  belowAgeTarget: {
+    headline: '減らさず、筋肉を守る時期です',
+    empathy: '一般的には標準の範囲ですが、あなたの年齢では「もう少しあってもいい」体重です。これからは減らすことより、筋肉と体力を守ることが元気の秘訣になります。',
+    tips: [
+      '✅ タンパク質を毎食しっかり（手のひら1枚分が目安）',
+      '✅ 体重を減らすより、姿勢と筋肉を整えることを優先',
+      '✅ 骨のためにカルシウム・ビタミンDも（乳製品・お魚・きのこ）',
+      '✅ ゆるやかに体を動かす習慣を（お散歩・サロンのワークでOK）'
+    ],
+    note: '💡 年齢を重ねると、少しふっくらしているほうが元気で長生きというデータもあります。「痩せなきゃ」は手放して大丈夫ですよ。'
+  },
+  normal: {
+    headline: '今のあなたのままで、じゅうぶん素敵です',
+    empathy: 'あなたの年齢の健康的な範囲に、ちゃんと入っています。ここからは「減らす」より「整える」を合言葉にしていきましょう。',
+    tips: [
+      '✅ 食事の時間をだいたい一定に。リズムが体を整えます',
+      '✅ よく噛んで、ゆっくり食べる（ひと口20回が目安）',
+      '✅ 野菜やタンパク質から先に食べる',
+      '✅ 体重は毎日の点ではなく、1週間の流れで見てあげる'
+    ],
+    note: '💡 美容体重を目指したい場合も、月1kg以内のゆるやかペースで。急がないほうが、リバウンドせずキレイに整います。'
+  },
+  overweight1: {
+    headline: 'ゆるやかに、少しずつで大丈夫',
+    empathy: '数字を見てドキッとしたかもしれません。でも大丈夫、いま気づけたことがいちばんの一歩です。がんばりすぎず、小さな習慣から整えていきましょう。',
+    tips: [
+      '✅ まずは飲み物から。甘い飲み物をお茶・水・炭酸水に',
+      '✅ 夜遅めのごはんを、少しだけ軽めに',
+      '✅ タンパク質と野菜を先に、主食はそのあとに',
+      '✅ 完璧を目指さず「7割できたらはなまる」の気持ちで'
+    ],
+    note: '💡 「🍽️ カロリー計算」タブで、あなたに合った1日の目安を見てみましょう。無理のない数字がわかると安心できますよ。'
+  },
+  overweight2plus: {
+    headline: 'ひとりでがんばらなくて大丈夫',
+    empathy: 'ここまで開いてくれてありがとうございます。急いで減らす必要はありません。体を守りながら、少しずつ整えていきましょう。',
+    tips: [
+      '✅ まずは「体重を測る習慣」だけでOK。それだけで変わり始めます',
+      '✅ 飲み物を無糖のものに変えてみる',
+      '✅ 睡眠を整える。眠りが浅いと食欲のホルモンが乱れやすくなります'
+    ],
+    note: '⚠️ 健康を守るために、お医者さんや専門家と一緒に進めるのがおすすめです。ひとりで抱えこまないでくださいね。'
+  }
+};
+
+// 50歳以上の方への共通メッセージ
+const OVER50_NOTE = '💡 50代からは「減らしすぎない」ことも大切です。タンパク質をしっかりとって、筋肉を守りながら整えていきましょう。';
+
+// 整える食べ方のコツ
+const TIPS = [
+  { t: '✅ 水分をこまめに', d: '1日1.5Lが目安。のどが渇く前に、ひと口ずつ。' },
+  { t: '✅ 野菜・きのこ・海藻を先に', d: 'いわゆるベジファースト。血糖値がゆるやかになります。' },
+  { t: '✅ タンパク質は毎食「手のひら1枚分」', d: '卵・お豆腐・お魚・お肉・お豆。筋肉と満足感のもとです。' },
+  { t: '✅ よく噛む（ひと口20回が目安）', d: '満腹サインが届くまで約20分。ゆっくりが近道です。' },
+  { t: '✅ 朝ごはんは抜かない', d: '少量でもOK。体内時計が整って、夜のドカ食いを防ぎます。' },
+  { t: '✅ 夜ごはんは寝る3時間前までに', d: '難しい日は、主食を少なめ・汁物多めに調整。' },
+  { t: '✅ 甘い飲み物をお茶・水・炭酸水に', d: '飲み物のカロリーは満足感が少なめ。ここが一番ラクな見直しポイント。' },
+  { t: '✅ 主食は抜かずに「量をそろえる」', d: 'ごはんを毎食こぶし1個分くらいに。抜くと続きません。' },
+  { t: '💡 体重は朝トイレのあと・同じ条件で', d: '数字のブレに一喜一憂しなくてすみます。' },
+  { t: '💡 食べすぎた日は「次の食事」でリセット', d: '抜かなくて大丈夫。野菜と汁物を多めにするだけでOK。' },
+  { t: '💡 コンビニなら「おにぎり＋サラダチキン＋お味噌汁」', d: 'これだけでバランスの整うひとそろい。' },
+  { t: '⚠️ 極端な糖質抜き・置き換えの連続はおすすめしません', d: '続かない方法は、方法のほうが悪いんです。ゆるやかが最強。' }
+];
+
+// 整うごはんのアイデア
+const MEALS = [
+  { group: '🌅 朝ごはん', items: [
+    '卵かけごはん＋お味噌汁＋のり',
+    'ヨーグルト＋バナナ＋オートミール',
+    'トースト＋ゆで卵＋ミニトマト'
+  ]},
+  { group: '☀️ お昼ごはん', items: [
+    '鮭おにぎり＋サラダチキン＋野菜スープ',
+    'ごはん＋鶏むねの照り焼き＋お浸し',
+    'お蕎麦＋温泉卵＋わかめ'
+  ]},
+  { group: '🌙 夜ごはん', items: [
+    'お豆腐と野菜のお鍋（〆は控えめに）',
+    '焼き魚＋ごはん少なめ＋具だくさんお味噌汁',
+    '豚しゃぶサラダ＋ごはん＋きのこのお吸い物'
+  ]},
+  { group: '🍬 間食（小腹がすいたら）', items: [
+    '素焼きナッツひとつかみ',
+    'ヨーグルト or チーズ1個',
+    'ゆで卵・高カカオチョコ2かけ'
+  ]}
+];
+
+// 年齢別の目標BMI範囲（厚生労働省「日本人の食事摂取基準2020」）
+function ageBmiRange(age) {
+  if (age >= 65) return { lower: 21.5, upper: 24.9, label: '65歳以上' };
+  if (age >= 50) return { lower: 20.0, upper: 24.9, label: '50〜64歳' };
+  return { lower: 18.5, upper: 24.9, label: '18〜49歳' };
+}
+
+// localStorage キー
+const KEY_MEMO = 'totono-diet-memo-v1';
+const KEY_WEIGHT = 'totono-diet-weight-v1';
+const KEY_PROFILE = 'totono-diet-profile-v1';
+
+// ============================================================
+// === ユーティリティ ===
+// ============================================================
+
+// 全角数字→半角に直してから数値化
+function toNum(raw) {
+  if (raw == null) return NaN;
+  const s = String(raw)
+    .replace(/[０-９]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0))
+    .replace(/[．]/g, '.')
+    .replace(/[,，\s]/g, '');
+  if (s === '') return NaN;
+  return parseFloat(s);
+}
+
+// 入力チェック。OKなら数値、NGならエラーメッセージを表示して null
+function readNum(inputId, min, max, errEl, msg) {
+  const v = toNum(document.getElementById(inputId).value);
+  if (isNaN(v) || v < min || v > max) {
+    errEl.textContent = msg;
+    errEl.classList.add('show');
+    return null;
+  }
+  return v;
+}
+
+function hideErr(errEl) {
+  errEl.textContent = '';
+  errEl.classList.remove('show');
+}
+
+function todayStr() {
+  const d = new Date();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${m}-${day}`;
+}
+
+// localStorage 安全アクセス
+function loadJson(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (e) { return fallback; }
+}
+function saveJson(key, obj) {
+  try {
+    localStorage.setItem(key, JSON.stringify(obj));
+    return true;
+  } catch (e) { return false; }
+}
+
+// ============================================================
+// === タブ切り替え ===
+// ============================================================
+function switchTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add('active');
+  window.scrollTo({ top: 0 });
+}
+
+// ============================================================
+// === タブ1: 体重チェック ===
+// ============================================================
+function runCheck() {
+  const err = document.getElementById('chk-err');
+  hideErr(err);
+
+  // 身長が3未満なら m 入力とみなしてヒント
+  const rawH = toNum(document.getElementById('chk-height').value);
+  if (!isNaN(rawH) && rawH > 0 && rawH < 3) {
+    err.textContent = '身長は cm で入れてくださいね（例: 158）';
+    err.classList.add('show');
+    return;
+  }
+
+  const height = readNum('chk-height', 100, 220, err, '身長を cm で入れてくださいね（例: 158）');
+  if (height === null) return;
+  const weight = readNum('chk-weight', 25, 200, err, '体重を kg で入れてくださいね（例: 52.5）');
+  if (weight === null) return;
+  const age = readNum('chk-age', 15, 100, err, '年齢を入れてくださいね（例: 42）');
+  if (age === null) return;
+
+  const h2 = (height / 100) ** 2;
+  const bmi = weight / h2;
+  const range = ageBmiRange(age);
+
+  // 判定カテゴリ（日本肥満学会分類 × 年齢別目標範囲）
+  let category, official, heroHeadline;
+  if (bmi < 18.5) {
+    category = 'underweight';
+    official = '低体重（日本肥満学会の分類）';
+  } else if (bmi < 25) {
+    official = '普通体重（日本肥満学会の分類）';
+    category = (bmi < range.lower) ? 'belowAgeTarget' : 'normal';
+  } else if (bmi < 30) {
+    category = 'overweight1';
+    official = '肥満1度（日本肥満学会の分類）';
+  } else {
+    category = 'overweight2plus';
+    official = (bmi < 35 ? '肥満2度' : '肥満3度以上') + '（日本肥満学会の分類）';
+  }
+  heroHeadline = ADVICE[category].headline;
+
+  // BMIヒーロー
+  document.getElementById('chk-bmi').innerHTML = bmi.toFixed(1);
+  document.getElementById('chk-headline').textContent = heroHeadline;
+  document.getElementById('chk-official').textContent = official;
+
+  // 基準体重カード
+  const teki = 22 * h2, biyo = 20 * h2, cinde = 18 * h2;
+  const lowKg = range.lower * h2, upKg = range.upper * h2;
+  const over50 = age >= 50;
+  const biyoBelow = 20 < range.lower;   // 美容体重が年齢別下限より下か
+  const grid = document.getElementById('chk-weights');
+  grid.innerHTML = `
+    <div class="w-card highlight">
+      <div class="w-name">💚 健康的な範囲</div>
+      <div class="w-bmi">${range.label}の目標（BMI ${range.lower}〜${range.upper}）</div>
+      <div class="w-val">${lowKg.toFixed(1)}〜${upKg.toFixed(1)}<small> kg</small></div>
+    </div>
+    <div class="w-card">
+      <div class="w-name">🌸 適正体重</div>
+      <div class="w-bmi">BMI 22（いちばん病気になりにくい）</div>
+      <div class="w-val">${teki.toFixed(1)}<small> kg</small></div>
+    </div>
+    <div class="w-card">
+      <div class="w-name">🎀 美容体重</div>
+      <div class="w-bmi">BMI 20</div>
+      <div class="w-val">${biyo.toFixed(1)}<small> kg</small></div>
+      ${biyoBelow ? `<div class="w-note">⚠️ あなたの年齢の健康範囲より下です。${over50 ? '目標にしないことをおすすめします' : 'ご注意を'}</div>` : ''}
+    </div>
+    <div class="w-card">
+      <div class="w-name">🌙 シンデレラ体重</div>
+      <div class="w-bmi">BMI 18</div>
+      <div class="w-val">${cinde.toFixed(1)}<small> kg</small></div>
+      <div class="w-note">⚠️ 健康範囲より下です。${over50 ? '体調をくずしやすいため、目標にしないでくださいね' : '目標にはおすすめしません'}</div>
+    </div>`;
+
+  // アドバイス描画
+  const a = ADVICE[category];
+  const box = document.getElementById('chk-advice');
+  box.innerHTML = `
+    <div class="a-headline">${a.headline}</div>
+    <p class="a-empathy">${a.empathy}</p>
+    <ul>${a.tips.map(t => `<li>${t}</li>`).join('')}</ul>
+    <div class="a-note">${a.note}</div>
+    ${over50 && category !== 'belowAgeTarget' ? `<div class="a-over50">${OVER50_NOTE}</div>` : ''}`;
+
+  document.getElementById('chk-result').classList.add('show');
+
+  // プロフィール保存（他タブへ引き継ぎ）
+  const prof = loadJson(KEY_PROFILE, {});
+  prof.height = height; prof.weight = weight; prof.age = age;
+  saveJson(KEY_PROFILE, prof);
+  prefillCalorie();
+}
+
+// ============================================================
+// === タブ2: 体重記録 ===
+// ============================================================
+function getRecords() {
+  const arr = loadJson(KEY_WEIGHT, []);
+  return arr.slice().sort((a, b) => a.date < b.date ? -1 : 1);
+}
+
+function saveRecord() {
+  const err = document.getElementById('rec-err');
+  hideErr(err);
+  const date = document.getElementById('rec-date').value;
+  if (!date) {
+    err.textContent = '日付を選んでくださいね';
+    err.classList.add('show');
+    return;
+  }
+  const weight = readNum('rec-weight', 25, 200, err, '体重を kg で入れてくださいね（例: 52.5）');
+  if (weight === null) return;
+
+  const records = getRecords().filter(r => r.date !== date);
+  records.push({ date, weight });
+  records.sort((a, b) => a.date < b.date ? -1 : 1);
+  const ok = saveJson(KEY_WEIGHT, records);
+  document.getElementById('rec-storage-err').classList.toggle('show', !ok);
+  if (ok) document.getElementById('rec-weight').value = '';
+  renderRecords();
+}
+
+function deleteRecord(date) {
+  if (!confirm(date + ' の記録を削除しますか？')) return;
+  saveJson(KEY_WEIGHT, getRecords().filter(r => r.date !== date));
+  renderRecords();
+}
+
+function saveGoal() {
+  const err = document.getElementById('goal-err');
+  hideErr(err);
+  const raw = document.getElementById('rec-goal').value;
+  const prof = loadJson(KEY_PROFILE, {});
+  if (String(raw).trim() === '') {
+    delete prof.goalWeight;
+    saveJson(KEY_PROFILE, prof);
+    renderRecords();
+    return;
+  }
+  const goal = readNum('rec-goal', 25, 200, err, '目標体重を kg で入れてくださいね（例: 50）');
+  if (goal === null) return;
+  prof.goalWeight = goal;
+  saveJson(KEY_PROFILE, prof);
+  renderRecords();
+}
+
+function renderRecords() {
+  const records = getRecords();
+  const chart = document.getElementById('rec-chart');
+  const diffEl = document.getElementById('rec-diff');
+  const listEl = document.getElementById('rec-list');
+  const goal = loadJson(KEY_PROFILE, {}).goalWeight;
+
+  // --- グラフ ---
+  if (records.length === 0) {
+    chart.innerHTML = '<div class="chart-empty">まだ記録がありません。<br>今日の体重から、ゆるっと始めてみましょう🌸</div>';
+  } else {
+    chart.innerHTML = buildChartSvg(records.slice(-30), goal);
+  }
+
+  // --- 前回との差分メッセージ ---
+  if (records.length >= 2) {
+    const last = records[records.length - 1];
+    const prev = records[records.length - 2];
+    const diff = Math.round((last.weight - prev.weight) * 10) / 10;
+    let msg;
+    if (Math.abs(diff) <= 0.3) {
+      msg = `前回から ${diff >= 0 ? '+' : ''}${diff.toFixed(1)}kg。このくらいは誤差の範囲です。気にしなくて大丈夫🌸`;
+    } else if (diff < 0) {
+      msg = `前回から ${diff.toFixed(1)}kg。いい流れですね。このままゆるやかに🌿`;
+    } else {
+      msg = `前回から +${diff.toFixed(1)}kg。1日の増減はよくあること。1週間の流れで見ていきましょう☕`;
+    }
+    diffEl.textContent = msg;
+    diffEl.style.display = 'block';
+  } else {
+    diffEl.style.display = 'none';
+  }
+
+  // --- 一覧（新しい順） ---
+  listEl.innerHTML = '';
+  if (records.length === 0) {
+    const p = document.createElement('p');
+    p.className = 'desc';
+    p.style.fontSize = '13px';
+    p.style.color = 'var(--sub)';
+    p.textContent = '記録するとここに一覧が表示されます。';
+    listEl.appendChild(p);
+  } else {
+    records.slice().reverse().forEach(r => {
+      const item = document.createElement('div');
+      item.className = 'rec-item';
+      const dateSpan = document.createElement('span');
+      dateSpan.className = 'rec-date';
+      dateSpan.textContent = r.date;
+      const wSpan = document.createElement('span');
+      wSpan.className = 'rec-weight';
+      wSpan.textContent = r.weight.toFixed(1) + ' kg';
+      const del = document.createElement('button');
+      del.className = 'del-btn';
+      del.textContent = '🗑';
+      del.setAttribute('aria-label', r.date + ' の記録を削除');
+      del.onclick = () => deleteRecord(r.date);
+      item.appendChild(dateSpan);
+      item.appendChild(wSpan);
+      item.appendChild(del);
+      listEl.appendChild(item);
+    });
+  }
+}
+
+// 折れ線グラフをインラインSVGで自前描画（数値のみ埋め込むので安全）
+function buildChartSvg(records, goal) {
+  const W = 360, H = 220;
+  const padL = 44, padR = 16, padT = 18, padB = 30;
+
+  const weights = records.map(r => r.weight);
+  let min = Math.min(...weights);
+  let max = Math.max(...weights);
+  if (typeof goal === 'number') { min = Math.min(min, goal); max = Math.max(max, goal); }
+  if (max - min < 1) { min -= 0.6; max += 0.6; }   // 変化が小さくても線が見えるように
+  const padY = (max - min) * 0.12;
+  min -= padY; max += padY;
+
+  const n = records.length;
+  const x = i => n === 1 ? (padL + (W - padL - padR) / 2) : padL + (W - padL - padR) * i / (n - 1);
+  const y = w => padT + (H - padT - padB) * (max - w) / (max - min);
+
+  const fmtDate = d => `${parseInt(d.slice(5, 7))}/${parseInt(d.slice(8, 10))}`;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="体重の推移グラフ">`;
+
+  // 横グリッド線（上端・中央・下端）+ Y軸ラベル
+  [max - padY, (min + max) / 2, min + padY].forEach(v => {
+    const gy = y(v);
+    svg += `<line x1="${padL}" y1="${gy.toFixed(1)}" x2="${W - padR}" y2="${gy.toFixed(1)}" stroke="#F0E4E0" stroke-width="1"/>`;
+    svg += `<text x="${padL - 6}" y="${(gy + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="#8A817D">${v.toFixed(1)}</text>`;
+  });
+
+  // 目標体重の点線
+  if (typeof goal === 'number') {
+    const gy = y(goal);
+    svg += `<line x1="${padL}" y1="${gy.toFixed(1)}" x2="${W - padR}" y2="${gy.toFixed(1)}" stroke="#7FADA3" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+    svg += `<text x="${W - padR}" y="${(gy - 5).toFixed(1)}" text-anchor="end" font-size="10" fill="#7FADA3" font-weight="bold">目標 ${goal.toFixed(1)}kg</text>`;
+  }
+
+  // 折れ線
+  if (n >= 2) {
+    const pts = records.map((r, i) => `${x(i).toFixed(1)},${y(r.weight).toFixed(1)}`).join(' ');
+    svg += `<polyline points="${pts}" fill="none" stroke="#E8A0A0" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  }
+
+  // 点
+  records.forEach((r, i) => {
+    svg += `<circle cx="${x(i).toFixed(1)}" cy="${y(r.weight).toFixed(1)}" r="4" fill="#fff" stroke="#E8A0A0" stroke-width="2"><title>${r.date} ${r.weight.toFixed(1)}kg</title></circle>`;
+  });
+
+  // X軸ラベル（最初・真ん中・最後）
+  const labelIdx = n === 1 ? [0] : (n <= 4 ? [0, n - 1] : [0, Math.floor((n - 1) / 2), n - 1]);
+  labelIdx.forEach(i => {
+    svg += `<text x="${x(i).toFixed(1)}" y="${H - 10}" text-anchor="middle" font-size="10" fill="#8A817D">${fmtDate(records[i].date)}</text>`;
+  });
+
+  svg += '</svg>';
+  return svg;
+}
+
+// ============================================================
+// === タブ3: カロリー計算 ===
+// ============================================================
+function prefillCalorie() {
+  const prof = loadJson(KEY_PROFILE, {});
+  if (prof.height && !document.getElementById('cal-height').value) document.getElementById('cal-height').value = prof.height;
+  if (prof.weight && !document.getElementById('cal-weight').value) document.getElementById('cal-weight').value = prof.weight;
+  if (prof.age && !document.getElementById('cal-age').value) document.getElementById('cal-age').value = prof.age;
+}
+
+function runCalorie() {
+  const err = document.getElementById('cal-err');
+  hideErr(err);
+
+  const rawH = toNum(document.getElementById('cal-height').value);
+  if (!isNaN(rawH) && rawH > 0 && rawH < 3) {
+    err.textContent = '身長は cm で入れてくださいね（例: 158）';
+    err.classList.add('show');
+    return;
+  }
+
+  const age = readNum('cal-age', 15, 100, err, '年齢を入れてくださいね（例: 42）');
+  if (age === null) return;
+  const height = readNum('cal-height', 100, 220, err, '身長を cm で入れてくださいね（例: 158）');
+  if (height === null) return;
+  const weight = readNum('cal-weight', 25, 200, err, '体重を kg で入れてくださいね（例: 52.5）');
+  if (weight === null) return;
+  const sex = document.querySelector('input[name="cal-sex"]:checked').value;
+  const act = parseFloat(document.querySelector('input[name="cal-act"]:checked').value);
+
+  // 基礎代謝: Mifflin-St Jeor式。
+  // 国立健康・栄養研究所式のほうが日本人向けの精度はわずかに高いが、
+  // 式が複雑で説明しづらいため、十分に検証されていて透明性の高いMifflinを採用。
+  const bmr = 10 * weight + 6.25 * height - 5 * age + (sex === 'female' ? -161 : 5);
+  const tdee = bmr * act;
+
+  const h2 = (height / 100) ** 2;
+  const bmi = weight / h2;
+  const range = ageBmiRange(age);
+
+  // 目標カロリー: TDEE−250 に3つのガード
+  let target = tdee - 250;
+  const guardEl = document.getElementById('cal-guard');
+  let guardMsg = '';
+  if (bmi < range.lower) {
+    // 低体重〜年齢別下限未満の方には減量を提案しない
+    target = tdee;
+    guardMsg = bmi < 18.5
+      ? '💡 いまは減らす時期ではないので、消費と同じ量をしっかり食べる目安にしています。まずは今の体を大切に。'
+      : '💡 あなたの年齢では今より減らさないほうが元気に過ごせます。維持できる量を目安にしています。';
+  } else if (target < bmr) {
+    target = bmr;
+    guardMsg = '💡 基礎代謝を下回らないように調整しました。これはあなたの体を守るためのライン。減らしすぎは、かえって痩せにくくなるんです。';
+  }
+  if (target < 1200) {
+    target = 1200;
+    guardMsg = '💡 健康を守るため、1,200kcalを下限にしています。これ以上減らさないことが「整える」近道です。';
+  }
+  target = Math.round(target / 10) * 10;
+
+  // PFC（P20% / F25% / C55%）
+  const pG = Math.round(target * 0.20 / 4);
+  const fG = Math.round(target * 0.25 / 9);
+  const cG = Math.round(target * 0.55 / 4);
+
+  document.getElementById('cal-bmr').textContent = Math.round(bmr).toLocaleString() + ' kcal';
+  document.getElementById('cal-tdee').textContent = Math.round(tdee).toLocaleString() + ' kcal';
+  document.getElementById('cal-target').innerHTML = target.toLocaleString() + '<small> kcal</small>';
+  guardEl.textContent = guardMsg;
+  guardEl.classList.toggle('show', guardMsg !== '');
+
+  document.getElementById('cal-p').innerHTML = pG + '<small> g</small>';
+  document.getElementById('cal-f').innerHTML = fG + '<small> g</small>';
+  document.getElementById('cal-c').innerHTML = cG + '<small> g</small>';
+
+  // タンパク質が体重×1.0g未満なら一言
+  const proteinNote = document.getElementById('cal-protein-note');
+  if (pG < weight * 1.0) {
+    proteinNote.textContent = `💡 タンパク質はできれば1日 ${Math.round(weight)}g（体重×1g）を目指すと、筋肉を守りながら整えられますよ。`;
+    proteinNote.classList.add('show');
+  } else {
+    proteinNote.classList.remove('show');
+  }
+
+  document.getElementById('cal-result').classList.add('show');
+
+  // プロフィール保存
+  const prof = loadJson(KEY_PROFILE, {});
+  prof.height = height; prof.weight = weight; prof.age = age; prof.sex = sex; prof.activity = act;
+  saveJson(KEY_PROFILE, prof);
+}
+
+// ============================================================
+// === タブ4: コツ・食事アイデア描画 ===
+// ============================================================
+function renderTips() {
+  document.getElementById('tips-list').innerHTML = TIPS.map(t =>
+    `<div class="tip-card"><b>${t.t}</b><span>${t.d}</span></div>`).join('');
+  document.getElementById('meals-list').innerHTML = MEALS.map(g =>
+    `<div class="meal-group-title">${g.group}</div>` +
+    g.items.map(i => `<div class="meal-card">${i}</div>`).join('')).join('');
+}
+
+// ============================================================
+// === タブ5: 食事メモ ===
+// ============================================================
+let selectedFeel = null;
+
+function pickFeel(btn) {
+  const already = btn.classList.contains('selected');
+  document.querySelectorAll('.feel-btn').forEach(b => b.classList.remove('selected'));
+  if (already) {
+    selectedFeel = null;
+  } else {
+    btn.classList.add('selected');
+    selectedFeel = btn.dataset.feel;
+  }
+}
+
+function saveMemo() {
+  const err = document.getElementById('memo-err');
+  hideErr(err);
+  const date = document.getElementById('memo-date').value || todayStr();
+  const text = document.getElementById('memo-text').value.trim();
+  if (!text) {
+    err.textContent = 'ひとことでいいので、食べたものを書いてみてくださいね';
+    err.classList.add('show');
+    return;
+  }
+  const memos = loadJson(KEY_MEMO, []);
+  memos.push({
+    id: String(Date.now()),
+    date,
+    text,
+    feeling: selectedFeel,
+    createdAt: new Date().toISOString()
+  });
+  const ok = saveJson(KEY_MEMO, memos);
+  document.getElementById('memo-storage-err').classList.toggle('show', !ok);
+  if (ok) {
+    document.getElementById('memo-text').value = '';
+    document.querySelectorAll('.feel-btn').forEach(b => b.classList.remove('selected'));
+    selectedFeel = null;
+  }
+  renderMemos();
+}
+
+function deleteMemo(id) {
+  if (!confirm('このメモを削除しますか？')) return;
+  saveJson(KEY_MEMO, loadJson(KEY_MEMO, []).filter(m => m.id !== id));
+  renderMemos();
+}
+
+function renderMemos() {
+  const listEl = document.getElementById('memo-list');
+  const memos = loadJson(KEY_MEMO, []).slice().sort((a, b) => {
+    if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+    return a.createdAt < b.createdAt ? 1 : -1;
+  });
+  listEl.innerHTML = '';
+  if (memos.length === 0) {
+    const p = document.createElement('p');
+    p.style.fontSize = '13px';
+    p.style.color = 'var(--sub)';
+    p.textContent = '保存するとここにメモが並びます。';
+    listEl.appendChild(p);
+    return;
+  }
+  // ユーザー入力は必ず textContent で描画（HTML注入防止）
+  memos.forEach(m => {
+    const item = document.createElement('div');
+    item.className = 'memo-item';
+    const head = document.createElement('div');
+    head.className = 'memo-head';
+    const left = document.createElement('span');
+    left.textContent = m.date + (m.feeling ? ' ' + m.feeling : '');
+    const del = document.createElement('button');
+    del.className = 'del-btn';
+    del.textContent = '🗑';
+    del.setAttribute('aria-label', 'メモを削除');
+    del.onclick = () => deleteMemo(m.id);
+    head.appendChild(left);
+    head.appendChild(del);
+    const body = document.createElement('div');
+    body.className = 'memo-text';
+    body.textContent = m.text;
+    item.appendChild(head);
+    item.appendChild(body);
+    listEl.appendChild(item);
+  });
+}
+
+// ============================================================
+// === 初期化 ===
+// ============================================================
+(function init() {
+  // :has() 非対応の古いブラウザ向けフォールバック（選択中ラジオカードの見た目）
+  document.querySelectorAll('.radio-cards input').forEach(input => {
+    if (input.checked) input.closest('label').classList.add('checked');
+    input.addEventListener('change', () => {
+      document.querySelectorAll(`input[name="${input.name}"]`).forEach(r =>
+        r.closest('label').classList.toggle('checked', r.checked));
+    });
+  });
+
+  document.getElementById('rec-date').value = todayStr();
+  document.getElementById('memo-date').value = todayStr();
+
+  const prof = loadJson(KEY_PROFILE, {});
+  if (prof.height) document.getElementById('chk-height').value = prof.height;
+  if (prof.weight) document.getElementById('chk-weight').value = prof.weight;
+  if (prof.age) document.getElementById('chk-age').value = prof.age;
+  if (typeof prof.goalWeight === 'number') document.getElementById('rec-goal').value = prof.goalWeight;
+  prefillCalorie();
+
+  renderTips();
+  renderRecords();
+  renderMemos();
+})();
+</script>
+</body>
+</html>

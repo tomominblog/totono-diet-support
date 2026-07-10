@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#E8A0A0"/>
+  <circle cx="435" cy="435" r="155" fill="#A0C8C0" opacity="0.35"/>
+  <circle cx="40" cy="40" r="115" fill="#A0C8C0" opacity="0.35"/>
+  <text x="256" y="278" text-anchor="middle" dominant-baseline="middle"
+        font-family="'Yu Gothic UI','Noto Sans JP',sans-serif" font-weight="bold"
+        font-size="215" fill="#FFFFFF">整</text>
+</svg>

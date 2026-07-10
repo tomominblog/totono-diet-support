@@ -1,0 +1,14 @@
+{
+  "name": "ととのサロン 整えるダイエットサポート",
+  "short_name": "整えるダイエット",
+  "description": "体重チェック・体重記録・カロリー計算・食べ方のコツを、がんばらないトーンでサポート。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FDF9F7",
+  "theme_color": "#E8A0A0",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
