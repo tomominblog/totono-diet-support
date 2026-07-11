@@ -444,6 +444,28 @@
     padding: 9px 12px;
     margin-top: 10px;
   }
+
+  /* 年齢別基礎代謝の表 */
+  .bmr-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 13px;
+  }
+  .bmr-table th, .bmr-table td {
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px dashed var(--border);
+  }
+  .bmr-table th {
+    font-size: 12px;
+    color: var(--sub);
+    font-weight: 700;
+    border-bottom: 1.5px solid var(--border);
+  }
+  .bmr-table td:first-child { font-weight: 700; text-align: left; }
+  .bmr-table .female { color: var(--coral-dark); font-weight: 700; font-family: 'Noto Sans JP', sans-serif; }
+  .bmr-table tr.you td { background: var(--mint-light); border-radius: 8px; }
   .suggest-item .s-ing { font-size: 11.5px; color: var(--sub); margin-top: 2px; }
   .suggest-item .s-ing .have { color: var(--mint-dark); font-weight: 700; }
   .suggest-empty {
@@ -683,6 +705,25 @@
         <div class="guard-note" id="cal-protein-note"></div>
       </div>
     </div>
+
+    <div class="card">
+      <h2>年齢で変わる基礎代謝</h2>
+      <p class="desc">1日に使うエネルギーのうち約7割は基礎代謝（じっとしていても使われる分）。そのいちばんの働き手が筋肉です。年齢とともにゆるやかに下がっていくのは、とても自然なことなんです。</p>
+      <table class="bmr-table">
+        <thead>
+          <tr><th>年代</th><th>女性</th><th>男性</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>18〜29歳</td><td class="female">約1,110kcal</td><td>約1,530kcal</td></tr>
+          <tr><td>30〜49歳</td><td class="female">約1,160kcal</td><td>約1,530kcal</td></tr>
+          <tr><td>50〜64歳</td><td class="female">約1,110kcal</td><td>約1,480kcal</td></tr>
+          <tr><td>65〜74歳</td><td class="female">約1,080kcal</td><td>約1,400kcal</td></tr>
+          <tr><td>75歳以上</td><td class="female">約1,010kcal</td><td>約1,280kcal</td></tr>
+        </tbody>
+      </table>
+      <div class="s-ing" style="margin-top:8px; text-align:center; color:var(--sub); font-size:11px;">※平均的な体格での参考値（厚生労働省「日本人の食事摂取基準2020」）。あなたの値は上の計算で出せます</div>
+      <div class="guard-note show" style="margin-top:14px;">💡 「昔と同じ食べ方なのに増えやすくなった…」は、あなたのせいではなく基礎代謝の自然な変化。でも大丈夫。タンパク質をしっかりとって軽く体を動かし、筋肉を守ることで、下がり方はゆるやかにできますよ。</div>
+    </div>
   </section>
 
   <!-- ============ タブ4: 食べ方のコツ ============ -->
@@ -710,6 +751,12 @@
       <h2>整うごはんのアイデア</h2>
       <p class="desc">特別な食材はいりません。コンビニやおうちにあるもので整えられます。</p>
       <div id="meals-list"></div>
+    </div>
+
+    <div class="card">
+      <h2>毎日のちょっとした意識で、変わる</h2>
+      <p class="desc">食事だけががんばりどころではありません。日々の小さな意識が、痩せやすい体をゆっくり育ててくれます。ぜんぶやらなくてOK。「これならできそう」をひとつだけどうぞ。</p>
+      <div id="habits-list"></div>
     </div>
   </section>
 
@@ -961,6 +1008,19 @@ const RECIPES = [
 ];
 
 const MEAL_EMOJI = { '朝': '🌅 朝ごはん', '昼': '☀️ お昼ごはん', '夜': '🌙 夜ごはん', '間食': '🍬 間食' };
+
+// 毎日のちょっとした意識（痩せやすい体を育てる習慣）
+const HABITS = [
+  { t: '🪞 毎日、鏡で自分を見る', d: '数字より先に姿勢と表情をチェック。毎日眺めるだけで、自然と意識が変わっていきます。' },
+  { t: '🧍‍♀️ 姿勢を整える', d: '骨盤が立つと呼吸が深くなり、おなかのインナーマッスルも働きやすくなります。サロンのワークと相性ばつぐん。' },
+  { t: '💧 水をこまめに飲む', d: '体の約6割は水分。起きたとき・食事のとき・お風呂の前後にひと口ずつ、1日1.5Lを目安に。' },
+  { t: '🌅 朝ごはんで体内時計をリセット', d: '朝食べると1日のリズムが整い、燃えやすい体に。少量でも大丈夫です。' },
+  { t: '✍️ 食べたものを記録する', d: '「反省」ではなく「観察」でOK。このサイトの📝食事メモを使ってくださいね。' },
+  { t: '🛁 湯船で温まって、むくみをためない', d: 'シャワーだけの日より血のめぐりが変わります。その日のむくみはその日のうちに。' },
+  { t: '🤲 ふくらはぎをやさしくマッサージ', d: 'お風呂上がりに、下から上へなでるだけ。がんばらなくて大丈夫。' },
+  { t: '🚶 軽く体を動かす', d: 'ひと駅歩く・寝る前のストレッチで十分。大きく体を動かすと筋肉がたくさん働いてくれます。' },
+  { t: '😴 睡眠をたいせつに', d: '眠りが浅いと食欲のホルモンが乱れがち。まずは寝る時間を10分だけ早めることから。' }
+];
 
 // 年齢別の目標BMI範囲（厚生労働省「日本人の食事摂取基準2020」）
 function ageBmiRange(age) {
@@ -1406,6 +1466,8 @@ function runCalorie() {
 function renderTips() {
   document.getElementById('tips-list').innerHTML = TIPS.map(t =>
     `<div class="tip-card"><b>${t.t}</b><span>${t.d}</span></div>`).join('');
+  document.getElementById('habits-list').innerHTML = HABITS.map(h =>
+    `<div class="tip-card"><b>${h.t}</b><span>${h.d}</span></div>`).join('');
   document.getElementById('meals-list').innerHTML = MEALS.map(g =>
     `<div class="meal-group-title">${g.group}</div>` +
     g.items.map(i => `<div class="meal-card"><span class="s-kcal">${i.kcal}</span>${i.n}</div>`).join('')).join('') +
