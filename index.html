@@ -714,14 +714,14 @@
           <tr><th>年代</th><th>女性</th><th>男性</th></tr>
         </thead>
         <tbody>
-          <tr><td>18〜29歳</td><td class="female">約1,110kcal</td><td>約1,530kcal</td></tr>
-          <tr><td>30〜49歳</td><td class="female">約1,160kcal</td><td>約1,530kcal</td></tr>
-          <tr><td>50〜64歳</td><td class="female">約1,110kcal</td><td>約1,480kcal</td></tr>
-          <tr><td>65〜74歳</td><td class="female">約1,080kcal</td><td>約1,400kcal</td></tr>
-          <tr><td>75歳以上</td><td class="female">約1,010kcal</td><td>約1,280kcal</td></tr>
+          <tr><td>18〜29歳</td><td class="female">約1,130kcal</td><td>約1,490kcal</td></tr>
+          <tr><td>30〜49歳</td><td class="female">約1,170kcal</td><td>約1,570kcal</td></tr>
+          <tr><td>50〜64歳</td><td class="female">約1,120kcal</td><td>約1,510kcal</td></tr>
+          <tr><td>65〜74歳</td><td class="female">約1,090kcal</td><td>約1,390kcal</td></tr>
+          <tr><td>75歳以上</td><td class="female">約1,020kcal</td><td>約1,310kcal</td></tr>
         </tbody>
       </table>
-      <div class="s-ing" style="margin-top:8px; text-align:center; color:var(--sub); font-size:11px;">※平均的な体格での参考値（厚生労働省「日本人の食事摂取基準2020」）。あなたの値は上の計算で出せます</div>
+      <div class="s-ing" style="margin-top:8px; text-align:center; color:var(--sub); font-size:11px;">※平均的な体格での参考値（厚生労働省「日本人の食事摂取基準（2025年版）」）。あなたの値は上の計算で出せます</div>
       <div class="guard-note show" style="margin-top:14px;">💡 「昔と同じ食べ方なのに増えやすくなった…」は、あなたのせいではなく基礎代謝の自然な変化。でも大丈夫。タンパク質をしっかりとって軽く体を動かし、筋肉を守ることで、下がり方はゆるやかにできますよ。</div>
     </div>
   </section>
@@ -1022,7 +1022,7 @@ const HABITS = [
   { t: '😴 睡眠をたいせつに', d: '眠りが浅いと食欲のホルモンが乱れがち。まずは寝る時間を10分だけ早めることから。' }
 ];
 
-// 年齢別の目標BMI範囲（厚生労働省「日本人の食事摂取基準2020」）
+// 年齢別の目標BMI範囲（厚生労働省「日本人の食事摂取基準（2025年版）」。2020年版から変更なし）
 function ageBmiRange(age) {
   if (age >= 65) return { lower: 21.5, upper: 24.9, label: '65歳以上' };
   if (age >= 50) return { lower: 20.0, upper: 24.9, label: '50〜64歳' };
