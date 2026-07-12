@@ -509,6 +509,15 @@
     color: var(--sub);
   }
   .memo-item .memo-text { font-size: 13px; margin-top: 4px; white-space: pre-wrap; word-break: break-word; }
+  .memo-item .memo-kcal {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--mint-dark);
+    background: var(--mint-light);
+    border-radius: 8px;
+    padding: 5px 10px;
+    margin-top: 6px;
+  }
 
   .storage-err {
     display: none;
@@ -770,7 +779,7 @@
   <section class="panel" id="panel-memo">
     <div class="card">
       <h2>今日の食事メモ</h2>
-      <p class="desc">食べたものと、そのときの気分をゆるっと残しましょう。記録は「反省」ではなく「観察」でOKです。</p>
+      <p class="desc">食べたものと、そのときの気分をゆるっと残しましょう。記録は「反省」ではなく「観察」でOKです。食べ物の名前を書くと、目安カロリーも自動で出ますよ。</p>
       <div class="field">
         <label for="memo-date">日付</label>
         <input type="date" id="memo-date">
@@ -795,7 +804,9 @@
 
     <div class="card">
       <h2>これまでのメモ</h2>
+      <div class="diff-msg" id="memo-today" style="display:none;"></div>
       <div id="memo-list"></div>
+      <div class="s-ing" style="margin-top:10px; text-align:center; color:var(--sub); font-size:11px;">※カロリーはメモの中の食べ物を辞書と照合した粗い目安です。量までは読めないので1人前ずつで数えています。辞書にない食べ物は含まれません</div>
     </div>
   </section>
 
@@ -1015,6 +1026,169 @@ const RECIPES = [
 ];
 
 const MEAL_EMOJI = { '朝': '🌅 朝ごはん', '昼': '☀️ お昼ごはん', '夜': '🌙 夜ごはん', '間食': '🍬 間食' };
+
+// 食事メモのカロリー目安辞書（一般的な1人前での目安kcal。k は言い換え・別表記）
+const FOOD_DB = [
+  // ごはんもの
+  { n: '卵かけごはん', kcal: 350 },
+  { n: '納豆ごはん', kcal: 320 },
+  { n: 'カレーライス', kcal: 750, k: ['カレー'] },
+  { n: '親子丼', kcal: 650 },
+  { n: '牛丼', kcal: 700 },
+  { n: 'かつ丼', kcal: 900, k: ['カツ丼'] },
+  { n: '天丼', kcal: 800 },
+  { n: '海鮮丼', kcal: 550 },
+  { n: 'チャーハン', kcal: 600, k: ['炒飯'] },
+  { n: 'オムライス', kcal: 700 },
+  { n: 'おにぎり', kcal: 180, k: ['おむすび'] },
+  { n: 'お寿司', kcal: 400, k: ['寿司', 'すし'] },
+  { n: 'おかゆ', kcal: 150, k: ['お粥'] },
+  { n: '雑炊', kcal: 250 },
+  { n: 'お餅', kcal: 120, k: ['もち', '餅'] },
+  { n: 'ごはん', kcal: 230, k: ['ご飯', '白米', 'ライス'] },
+  // 麺
+  { n: 'カレーうどん', kcal: 480 },
+  { n: '焼きそば', kcal: 570, k: ['やきそば'] },
+  { n: 'ラーメン', kcal: 500, k: ['らーめん'] },
+  { n: 'つけ麺', kcal: 600 },
+  { n: 'うどん', kcal: 350 },
+  { n: 'お蕎麦', kcal: 350, k: ['そば', '蕎麦'] },
+  { n: 'そうめん', kcal: 340, k: ['素麺'] },
+  { n: 'パスタ', kcal: 600, k: ['スパゲッティ', 'スパゲティ', 'ミートソース', 'カルボナーラ', 'ペペロンチーノ'] },
+  // パン
+  { n: 'メロンパン', kcal: 400 },
+  { n: 'クロワッサン', kcal: 250 },
+  { n: 'あんぱん', kcal: 280, k: ['アンパン'] },
+  { n: 'カレーパン', kcal: 350 },
+  { n: 'クリームパン', kcal: 300 },
+  { n: 'サンドイッチ', kcal: 300, k: ['サンド'] },
+  { n: 'ホットケーキ', kcal: 450, k: ['パンケーキ'] },
+  { n: 'フレンチトースト', kcal: 380 },
+  { n: 'トースト', kcal: 160, k: ['食パン'] },
+  { n: 'パン', kcal: 160 },
+  // 主菜
+  { n: '唐揚げ', kcal: 300, k: ['からあげ', 'から揚げ', '竜田揚げ'] },
+  { n: 'とんかつ', kcal: 450, k: ['トンカツ', '豚カツ'] },
+  { n: '生姜焼き', kcal: 350, k: ['しょうが焼き'] },
+  { n: 'ハンバーグ', kcal: 400 },
+  { n: '餃子', kcal: 350, k: ['ぎょうざ', 'ギョウザ'] },
+  { n: 'シュウマイ', kcal: 250, k: ['焼売', 'しゅうまい'] },
+  { n: '焼き鳥', kcal: 150, k: ['やきとり'] },
+  { n: 'ステーキ', kcal: 400 },
+  { n: '焼肉', kcal: 500, k: ['焼き肉'] },
+  { n: 'しゃぶしゃぶ', kcal: 400 },
+  { n: 'すき焼き', kcal: 500 },
+  { n: '天ぷら', kcal: 300, k: ['てんぷら'] },
+  { n: 'エビフライ', kcal: 200, k: ['海老フライ'] },
+  { n: 'アジフライ', kcal: 250 },
+  { n: 'コロッケ', kcal: 200 },
+  { n: '焼き魚', kcal: 150, k: ['焼魚'] },
+  { n: '鮭', kcal: 130, k: ['サーモン'] },
+  { n: 'さば', kcal: 200, k: ['サバ', '鯖'] },
+  { n: 'お刺身', kcal: 100, k: ['刺身'] },
+  { n: 'うなぎ', kcal: 400, k: ['鰻'] },
+  { n: '卵焼き', kcal: 120, k: ['玉子焼き', 'だし巻き'] },
+  { n: 'ゆで卵', kcal: 80, k: ['ゆでたまご'] },
+  { n: '目玉焼き', kcal: 100 },
+  { n: 'オムレツ', kcal: 200 },
+  { n: 'スクランブルエッグ', kcal: 150 },
+  { n: '麻婆豆腐', kcal: 250, k: ['マーボー豆腐'] },
+  { n: '肉じゃが', kcal: 250 },
+  { n: '豚しゃぶ', kcal: 200 },
+  { n: 'サラダチキン', kcal: 110 },
+  { n: '冷奴', kcal: 80, k: ['冷ややっこ'] },
+  { n: '湯豆腐', kcal: 100 },
+  { n: '豆腐', kcal: 80, k: ['とうふ'] },
+  { n: '納豆', kcal: 80 },
+  { n: 'おでん', kcal: 300 },
+  { n: 'お鍋', kcal: 350, k: ['鍋'] },
+  { n: 'グラタン', kcal: 450 },
+  { n: 'シチュー', kcal: 300 },
+  { n: 'ロールキャベツ', kcal: 200 },
+  { n: 'たこ焼き', kcal: 400, k: ['たこやき', 'タコ焼き'] },
+  { n: 'お好み焼き', kcal: 550 },
+  // 副菜・汁物
+  { n: '豚汁', kcal: 150, k: ['とん汁'] },
+  { n: 'お味噌汁', kcal: 40, k: ['味噌汁', 'みそ汁'] },
+  { n: 'コーンスープ', kcal: 130 },
+  { n: 'スープ', kcal: 50 },
+  { n: 'ポテトサラダ', kcal: 170, k: ['ポテサラ'] },
+  { n: 'マカロニサラダ', kcal: 200 },
+  { n: 'サラダ', kcal: 30 },
+  { n: 'おひたし', kcal: 20, k: ['お浸し'] },
+  { n: 'きんぴら', kcal: 80 },
+  { n: 'ひじき', kcal: 60 },
+  { n: '枝豆', kcal: 70 },
+  { n: 'お漬物', kcal: 10, k: ['漬物'] },
+  { n: 'もずく', kcal: 10 },
+  { n: 'キムチ', kcal: 20 },
+  // ファストフード・コンビニ
+  { n: 'チーズバーガー', kcal: 340 },
+  { n: 'ハンバーガー', kcal: 300, k: ['バーガー'] },
+  { n: 'フライドポテト', kcal: 330, k: ['ポテト'] },
+  { n: 'フライドチキン', kcal: 240 },
+  { n: 'ピザ', kcal: 600 },
+  { n: '肉まん', kcal: 260 },
+  { n: 'ホットドッグ', kcal: 340 },
+  // 間食・果物
+  { n: 'チーズケーキ', kcal: 330 },
+  { n: 'ケーキ', kcal: 350, k: ['ショートケーキ'] },
+  { n: 'シュークリーム', kcal: 230 },
+  { n: 'プリン', kcal: 150 },
+  { n: 'アイス', kcal: 200, k: ['アイスクリーム', 'ソフトクリーム'] },
+  { n: 'ポテトチップス', kcal: 330, k: ['ポテチ'] },
+  { n: 'チョコ', kcal: 80, k: ['チョコレート'] },
+  { n: 'クッキー', kcal: 100 },
+  { n: 'せんべい', kcal: 60, k: ['煎餅'] },
+  { n: '大福', kcal: 230 },
+  { n: 'どら焼き', kcal: 240 },
+  { n: 'だんご', kcal: 120, k: ['団子'] },
+  { n: 'まんじゅう', kcal: 180, k: ['饅頭'] },
+  { n: 'ドーナツ', kcal: 300 },
+  { n: 'カステラ', kcal: 160 },
+  { n: 'クレープ', kcal: 250 },
+  { n: 'パフェ', kcal: 450 },
+  { n: 'ナッツ', kcal: 150 },
+  { n: 'ヨーグルト', kcal: 80 },
+  { n: 'チーズ', kcal: 60 },
+  { n: 'ゼリー', kcal: 80 },
+  { n: 'グミ', kcal: 90 },
+  { n: 'グラノーラ', kcal: 220 },
+  { n: 'シリアル', kcal: 220, k: ['コーンフレーク'] },
+  { n: 'オートミール', kcal: 110 },
+  { n: 'バナナ', kcal: 90 },
+  { n: 'りんご', kcal: 110, k: ['リンゴ', '林檎'] },
+  { n: 'みかん', kcal: 40 },
+  { n: 'いちご', kcal: 35, k: ['イチゴ', '苺'] },
+  { n: 'ぶどう', kcal: 90, k: ['ブドウ'] },
+  { n: 'キウイ', kcal: 50 },
+  { n: '柿', kcal: 100 },
+  { n: 'スイカ', kcal: 40 },
+  // 飲み物
+  { n: 'タピオカ', kcal: 350, k: ['タピオカミルクティー'] },
+  { n: 'ミルクティー', kcal: 150 },
+  { n: 'カフェラテ', kcal: 120, k: ['ラテ', 'カフェオレ'] },
+  { n: 'ココア', kcal: 170 },
+  { n: 'スムージー', kcal: 150 },
+  { n: '甘酒', kcal: 80 },
+  { n: '牛乳', kcal: 130, k: ['ミルク'] },
+  { n: '豆乳', kcal: 110 },
+  { n: '野菜ジュース', kcal: 70 },
+  { n: 'ジュース', kcal: 90, k: ['オレンジジュース'] },
+  { n: 'コーラ', kcal: 140 },
+  { n: 'サイダー', kcal: 100 },
+  { n: 'ビール', kcal: 150 },
+  { n: 'ワイン', kcal: 90 },
+  { n: '日本酒', kcal: 100 },
+  { n: 'ハイボール', kcal: 70 },
+  { n: 'チューハイ', kcal: 150, k: ['酎ハイ', 'サワー'] },
+  { n: '梅酒', kcal: 120 }
+];
+
+// 照合用: 全キーワードを長い順に（「パンケーキ」を「パン」より先に見つけるため）
+const FOOD_MATCH = FOOD_DB
+  .flatMap(item => [item.n, ...(item.k || [])].map(kw => ({ kw, n: item.n, kcal: item.kcal })))
+  .sort((a, b) => b.kw.length - a.kw.length);
 
 // 毎日のちょっとした意識（痩せやすい体を育てる習慣）
 const HABITS = [
@@ -1595,6 +1769,24 @@ function omakase() {
 // ============================================================
 let selectedFeel = null;
 
+// メモ本文から食品を拾って目安カロリーを見積もる（見つからなければ null）
+// 同じ食品が2回書かれていたら2人前として数える。量までは読めないので1人前ずつの粗い目安。
+function estimateKcal(text) {
+  let rest = text;
+  const found = [];
+  for (const m of FOOD_MATCH) {
+    if (!rest.includes(m.kw)) continue;
+    const parts = rest.split(m.kw);
+    const count = parts.length - 1;
+    rest = parts.join('◇');   // 一度数えた部分は消して二重カウントを防ぐ
+    const ex = found.find(f => f.n === m.n);
+    if (ex) ex.count += count; else found.push({ n: m.n, kcal: m.kcal, count });
+  }
+  if (found.length === 0) return null;
+  const total = found.reduce((s, f) => s + f.kcal * f.count, 0);
+  return { total, found };
+}
+
 function pickFeel(btn) {
   const already = btn.classList.contains('selected');
   document.querySelectorAll('.feel-btn').forEach(b => b.classList.remove('selected'));
@@ -1655,6 +1847,24 @@ function renderMemos() {
     listEl.appendChild(p);
     return;
   }
+  // 今日のメモの合計カロリー（目安が出たものだけ）
+  const todayEl = document.getElementById('memo-today');
+  const today = todayStr();
+  let todayTotal = 0;
+  memos.filter(m => m.date === today).forEach(m => {
+    const est = estimateKcal(m.text);
+    if (est) todayTotal += est.total;
+  });
+  if (todayTotal > 0) {
+    const prof = loadJson(KEY_PROFILE, {});
+    let line = `今日のメモの合計（目安）: 約${todayTotal.toLocaleString()}kcal`;
+    if (typeof prof.targetKcal === 'number') line += ` ／ あなたの目安 ${prof.targetKcal.toLocaleString()}kcal`;
+    todayEl.textContent = line;
+    todayEl.style.display = 'block';
+  } else {
+    todayEl.style.display = 'none';
+  }
+
   // ユーザー入力は必ず textContent で描画（HTML注入防止）
   memos.forEach(m => {
     const item = document.createElement('div');
@@ -1675,6 +1885,15 @@ function renderMemos() {
     body.textContent = m.text;
     item.appendChild(head);
     item.appendChild(body);
+    // 食品辞書に載っているものがあれば目安カロリーを表示
+    const est = estimateKcal(m.text);
+    if (est) {
+      const kcalEl = document.createElement('div');
+      kcalEl.className = 'memo-kcal';
+      const detail = est.found.map(f => `${f.n}${f.count > 1 ? '×' + f.count : ''} ${f.kcal * f.count}`).join('・');
+      kcalEl.textContent = `目安 約${est.total.toLocaleString()}kcal（${detail}）`;
+      item.appendChild(kcalEl);
+    }
     listEl.appendChild(item);
   });
 }
