@@ -74,6 +74,10 @@
     scrollbar-width: none;
   }
   nav.tabs::-webkit-scrollbar { display: none; }
+  /* PCなどタブが収まる幅では中央寄せ（スマホは横スクロールのため左寄せのまま） */
+  @media (min-width: 640px) {
+    nav.tabs { justify-content: center; }
+  }
   .tab-btn {
     flex: 0 0 auto;
     border: 1.5px solid var(--border);
