@@ -537,19 +537,6 @@
   footer .copyright { text-align: center; margin-top: 16px; font-size: 11px; }
 
   /* ===== v2: 今日を見つめる記録ノート ===== */
-  .header-doodle {
-    position: absolute;
-    width: 44px;
-    height: 44px;
-    fill: none;
-    stroke: var(--coral-dark);
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    opacity: 0.52;
-  }
-  .header-doodle.left { left: max(18px, calc(50% - 275px)); top: 24px; transform: rotate(-8deg); }
-  .header-doodle.right { right: max(18px, calc(50% - 275px)); bottom: 18px; stroke: var(--mint-dark); transform: rotate(7deg); }
   .today-hero {
     position: relative;
     overflow: hidden;
@@ -564,16 +551,6 @@
   .today-hero h2 { display: block; font-size: 20px; line-height: 1.65; margin-top: 5px; }
   .today-hero h2::before { display: none; }
   .today-hero p { color: var(--sub); font-size: 13px; margin-top: 5px; }
-  .today-hero .mini-doodle {
-    width: 64px;
-    height: 22px;
-    margin: 10px auto 0;
-    display: block;
-    fill: none;
-    stroke: var(--coral-dark);
-    stroke-width: 1.8;
-    stroke-linecap: round;
-  }
   .profile-strip {
     display: flex;
     gap: 10px;
@@ -602,20 +579,11 @@
     background: #fff;
     border: 1.5px solid var(--coral);
     border-radius: 18px;
-    padding: 15px 17px 15px 48px;
+    padding: 15px 17px;
     margin-top: 14px;
     min-height: 58px;
     font-size: 13px;
     box-shadow: 0 3px 12px rgba(216, 160, 160, .12);
-  }
-  .reply-bubble::before {
-    content: "✎";
-    position: absolute;
-    left: 17px;
-    top: 12px;
-    color: var(--coral-dark);
-    font-size: 23px;
-    transform: rotate(-8deg);
   }
   .reply-bubble.pop { animation: replyPop .32s ease; }
   @keyframes replyPop { 0% { opacity:.35; transform:translateY(4px) scale(.99); } 100% { opacity:1; transform:none; } }
@@ -678,7 +646,6 @@
     font: 700 13px 'Zen Maru Gothic', sans-serif;
     cursor: pointer;
   }
-  .tool-button span { display: block; font-size: 21px; margin-bottom: 3px; }
   .history-day { border: 1.5px solid var(--border); border-radius: 13px; padding: 12px 14px; margin-top: 9px; }
   .history-day-head { display:flex; justify-content:space-between; gap:10px; align-items:center; font-size:12px; color:var(--sub); }
   .history-day-head strong { color:var(--text); font-size:13px; }
@@ -702,18 +669,16 @@
 <body>
 
 <header>
-  <svg class="header-doodle left" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 16h14M15 9v14M29 29h10M34 24v10"/><path d="M26 11c3 1 5 3 6 6M11 32c4-1 7-3 9-6"/></svg>
   <div class="salon-name">totono サロン</div>
   <h1>整えるダイエットサポート</h1>
   <p class="lead">記録して、気づいて、今日の自分をやさしく整える。</p>
-  <svg class="header-doodle right" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 32c9 1 18-7 23-19 2 13-3 22-15 25"/><path d="M17 27c4-1 8-4 11-8M20 33c-1-4-1-8 0-11"/></svg>
 </header>
 
 <nav class="tabs">
-  <button class="tab-btn active" data-tab="today" onclick="switchTab('today')">○ 今日</button>
-  <button class="tab-btn" data-tab="record" onclick="switchTab('record')">⌇ ふり返り</button>
-  <button class="tab-btn" data-tab="tips" onclick="switchTab('tips')">♧ 食事のヒント</button>
-  <button class="tab-btn" data-tab="more" onclick="switchTab('more')">… その他</button>
+  <button class="tab-btn active" data-tab="today" onclick="switchTab('today')">今日</button>
+  <button class="tab-btn" data-tab="record" onclick="switchTab('record')">ふり返り</button>
+  <button class="tab-btn" data-tab="tips" onclick="switchTab('tips')">食事のヒント</button>
+  <button class="tab-btn" data-tab="more" onclick="switchTab('more')">その他</button>
 </nav>
 
 <div class="wrap">
@@ -724,7 +689,6 @@
       <div class="today-date" id="today-label"></div>
       <h2>良い・悪いを決めずに<br>今日の自分を見ていきましょう</h2>
       <p>全部書かなくても大丈夫。ひとつ記録するたびに、少しずつ今日が見えてきます。</p>
-      <svg class="mini-doodle" viewBox="0 0 64 22" aria-hidden="true"><path d="M2 14c9-8 16 7 25-2s15 5 24-3c4-4 8-4 11-2"/><path d="M52 4l2 2 3-1-1 3 2 2-3 0-2 3-1-3-3-1 3-2Z"/></svg>
     </div>
 
     <div class="profile-strip" id="daily-profile-strip"></div>
@@ -1132,10 +1096,10 @@
     <div class="card">
       <h2>便利な機能</h2>
       <div class="tool-grid">
-        <button class="tool-button" type="button" onclick="switchTab('check')"><span>⚖️</span>BMI・体重の目安</button>
-        <button class="tool-button" type="button" onclick="switchTab('cal')"><span>🍽️</span>詳しいカロリー・PFC</button>
-        <button class="tool-button" type="button" onclick="switchTab('memo')"><span>📖</span>以前の食事メモ</button>
-        <button class="tool-button" type="button" onclick="switchTab('tips')"><span>🥬</span>食事のヒント</button>
+        <button class="tool-button" type="button" onclick="switchTab('check')">BMI・体重の目安</button>
+        <button class="tool-button" type="button" onclick="switchTab('cal')">詳しいカロリー・PFC</button>
+        <button class="tool-button" type="button" onclick="switchTab('memo')">以前の食事メモ</button>
+        <button class="tool-button" type="button" onclick="switchTab('tips')">食事のヒント</button>
       </div>
     </div>
 
