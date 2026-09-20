@@ -535,28 +535,304 @@
   footer h3 { font-size: 13px; margin-bottom: 8px; }
   footer p { font-size: 11.5px; color: var(--sub); line-height: 1.8; text-align: left; }
   footer .copyright { text-align: center; margin-top: 16px; font-size: 11px; }
+
+  /* ===== v2: 今日を見つめる記録ノート ===== */
+  .header-doodle {
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    fill: none;
+    stroke: var(--coral-dark);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.52;
+  }
+  .header-doodle.left { left: max(18px, calc(50% - 275px)); top: 24px; transform: rotate(-8deg); }
+  .header-doodle.right { right: max(18px, calc(50% - 275px)); bottom: 18px; stroke: var(--mint-dark); transform: rotate(7deg); }
+  .today-hero {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    background: linear-gradient(145deg, #fff 0%, var(--coral-light) 55%, var(--mint-light) 100%);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 25px 22px 23px;
+    margin-top: 16px;
+  }
+  .today-hero .today-date { color: var(--coral-dark); font-size: 12px; font-weight: 700; letter-spacing: .08em; }
+  .today-hero h2 { display: block; font-size: 20px; line-height: 1.65; margin-top: 5px; }
+  .today-hero h2::before { display: none; }
+  .today-hero p { color: var(--sub); font-size: 13px; margin-top: 5px; }
+  .today-hero .mini-doodle {
+    width: 64px;
+    height: 22px;
+    margin: 10px auto 0;
+    display: block;
+    fill: none;
+    stroke: var(--coral-dark);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+  .profile-strip {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--mint-light);
+    border-radius: 14px;
+    padding: 11px 13px;
+    margin-top: 14px;
+    font-size: 12px;
+  }
+  .profile-strip strong { color: var(--mint-dark); font-size: 14px; }
+  .text-link {
+    border: 0;
+    background: transparent;
+    color: var(--coral-dark);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .reply-bubble {
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--coral);
+    border-radius: 18px;
+    padding: 15px 17px 15px 48px;
+    margin-top: 14px;
+    min-height: 58px;
+    font-size: 13px;
+    box-shadow: 0 3px 12px rgba(216, 160, 160, .12);
+  }
+  .reply-bubble::before {
+    content: "✎";
+    position: absolute;
+    left: 17px;
+    top: 12px;
+    color: var(--coral-dark);
+    font-size: 23px;
+    transform: rotate(-8deg);
+  }
+  .reply-bubble.pop { animation: replyPop .32s ease; }
+  @keyframes replyPop { 0% { opacity:.35; transform:translateY(4px) scale(.99); } 100% { opacity:1; transform:none; } }
+  .section-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--coral-dark);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    margin-bottom: 2px;
+  }
+  .daily-row {
+    display: grid;
+    grid-template-columns: 62px 1fr auto;
+    gap: 8px;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .daily-row label { font-size: 13px; font-weight: 700; }
+  .daily-row input {
+    min-width: 0;
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 11px;
+    padding: 9px 10px;
+    font: 16px 'Zen Maru Gothic', sans-serif;
+    color: var(--text);
+  }
+  .daily-row input:focus { outline: none; border-color: var(--mint); }
+  .entry-save {
+    border: 1.5px solid var(--coral);
+    background: var(--coral-light);
+    color: var(--coral-dark);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font: 700 12px 'Zen Maru Gothic', sans-serif;
+    cursor: pointer;
+  }
+  .meal-estimate { grid-column: 2 / -1; color: var(--mint-dark); font-size: 11px; margin-top: -5px; min-height: 1.3em; }
+  .select-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .select-grid .field { margin-top: 0; }
+  .today-summary {
+    background: linear-gradient(135deg, var(--mint-light), #fff);
+    border: 1.5px dashed var(--mint);
+    border-radius: 14px;
+    padding: 13px 15px;
+    margin-top: 13px;
+    font-size: 12.5px;
+  }
+  .today-summary strong { color: var(--mint-dark); }
+  .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .tool-button {
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    background: #fff;
+    color: var(--text);
+    padding: 15px 10px;
+    font: 700 13px 'Zen Maru Gothic', sans-serif;
+    cursor: pointer;
+  }
+  .tool-button span { display: block; font-size: 21px; margin-bottom: 3px; }
+  .history-day { border: 1.5px solid var(--border); border-radius: 13px; padding: 12px 14px; margin-top: 9px; }
+  .history-day-head { display:flex; justify-content:space-between; gap:10px; align-items:center; font-size:12px; color:var(--sub); }
+  .history-day-head strong { color:var(--text); font-size:13px; }
+  .history-day-body { font-size:12px; margin-top:6px; white-space:pre-wrap; }
+  .history-tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:7px; }
+  .history-tag { background:var(--mint-light); color:var(--mint-dark); border-radius:999px; padding:2px 8px; font-size:10.5px; }
+  .subpage-back { margin: 14px 0 0; width: auto; padding: 8px 15px; }
+  .backup-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .backup-row .btn { flex:1; min-width:135px; margin-top:0; }
+  .file-label { display:block; cursor:pointer; text-align:center; }
+  .file-label input { display:none; }
+  @media (max-width: 430px) {
+    nav.tabs { justify-content: space-between; gap: 5px; padding: 9px 8px; }
+    .tab-btn { flex: 1 1 0; padding: 8px 5px; font-size: 11.5px; }
+    .daily-row { grid-template-columns: 52px 1fr auto; }
+    .entry-save { padding: 8px 10px; }
+    .select-grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
 
 <header>
+  <svg class="header-doodle left" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 16h14M15 9v14M29 29h10M34 24v10"/><path d="M26 11c3 1 5 3 6 6M11 32c4-1 7-3 9-6"/></svg>
   <div class="salon-name">totono サロン</div>
   <h1>整えるダイエットサポート</h1>
-  <p class="lead">がんばらなくて大丈夫。あなたのペースで、少しずつ。</p>
+  <p class="lead">記録して、気づいて、今日の自分をやさしく整える。</p>
+  <svg class="header-doodle right" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 32c9 1 18-7 23-19 2 13-3 22-15 25"/><path d="M17 27c4-1 8-4 11-8M20 33c-1-4-1-8 0-11"/></svg>
 </header>
 
 <nav class="tabs">
-  <button class="tab-btn active" data-tab="check" onclick="switchTab('check')">🐾 体重チェック</button>
-  <button class="tab-btn" data-tab="record" onclick="switchTab('record')">📈 体重記録</button>
-  <button class="tab-btn" data-tab="cal" onclick="switchTab('cal')">🍽️ カロリー計算</button>
-  <button class="tab-btn" data-tab="tips" onclick="switchTab('tips')">💡 食べ方のコツ</button>
-  <button class="tab-btn" data-tab="memo" onclick="switchTab('memo')">📝 食事メモ</button>
+  <button class="tab-btn active" data-tab="today" onclick="switchTab('today')">○ 今日</button>
+  <button class="tab-btn" data-tab="record" onclick="switchTab('record')">⌇ ふり返り</button>
+  <button class="tab-btn" data-tab="tips" onclick="switchTab('tips')">♧ 食事のヒント</button>
+  <button class="tab-btn" data-tab="more" onclick="switchTab('more')">… その他</button>
 </nav>
 
 <div class="wrap">
 
+  <!-- ============ 今日の記録 ============ -->
+  <section class="panel active" id="panel-today">
+    <div class="today-hero">
+      <div class="today-date" id="today-label"></div>
+      <h2>良い・悪いを決めずに<br>今日の自分を見ていきましょう</h2>
+      <p>全部書かなくても大丈夫。ひとつ記録するたびに、少しずつ今日が見えてきます。</p>
+      <svg class="mini-doodle" viewBox="0 0 64 22" aria-hidden="true"><path d="M2 14c9-8 16 7 25-2s15 5 24-3c4-4 8-4 11-2"/><path d="M52 4l2 2 3-1-1 3 2 2-3 0-2 3-1-3-3-1 3-2Z"/></svg>
+    </div>
+
+    <div class="profile-strip" id="daily-profile-strip"></div>
+    <div class="reply-bubble" id="daily-reply" role="status" aria-live="polite">今日はどんな一日になりそう？ まずは書きやすいところからどうぞ☺️</div>
+
+    <div class="card">
+      <div class="section-kicker">TODAY'S BODY</div>
+      <h2>今日のからだ</h2>
+      <p class="desc">数字は判定ではなく、今日の状態を知るためのメモです。</p>
+      <div class="field">
+        <label for="daily-date">日付</label>
+        <input type="date" id="daily-date" onchange="changeDailyDate()">
+      </div>
+      <div class="daily-row">
+        <label for="daily-weight">体重</label>
+        <input type="number" id="daily-weight" inputmode="decimal" step="0.1" placeholder="例: 62.0">
+        <button class="entry-save" type="button" onclick="saveDailyWeight()">記録</button>
+      </div>
+      <div class="select-grid">
+        <div class="field">
+          <label for="daily-sleep">睡眠</label>
+          <select id="daily-sleep" onchange="saveDailySelect('sleep', this.value)">
+            <option value="">選んでください</option>
+            <option value="8時間以上">8時間以上</option>
+            <option value="7〜8時間">7〜8時間</option>
+            <option value="6〜7時間">6〜7時間</option>
+            <option value="6時間未満">6時間未満</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="daily-fatigue">疲れ</label>
+          <select id="daily-fatigue" onchange="saveDailySelect('fatigue', this.value)">
+            <option value="">選んでください</option>
+            <option value="元気">元気</option>
+            <option value="少し疲れた">少し疲れた</option>
+            <option value="かなり疲れた">かなり疲れた</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="daily-stress">気分・ストレス</label>
+          <select id="daily-stress" onchange="saveDailySelect('stress', this.value)">
+            <option value="">選んでください</option>
+            <option value="おだやか">おだやか</option>
+            <option value="ふつう">ふつう</option>
+            <option value="少しざわざわ">少しざわざわ</option>
+            <option value="しんどい">しんどい</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="daily-bowel">おなか・便通</label>
+          <select id="daily-bowel" onchange="saveDailySelect('bowel', this.value)">
+            <option value="">選んでください</option>
+            <option value="いつも通り">いつも通り</option>
+            <option value="出ていない">出ていない</option>
+            <option value="ゆるめ">ゆるめ</option>
+            <option value="かため">かため</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-kicker">TODAY'S MEALS</div>
+      <h2>今日の食事</h2>
+      <p class="desc">食べたものをそのまま残してください。量が分からないものは、一般的な1人前で目安を出します。</p>
+      <div class="daily-row">
+        <label for="daily-breakfast">朝</label>
+        <input type="text" id="daily-breakfast" placeholder="例: パン、ヨーグルト">
+        <button class="entry-save" type="button" onclick="saveDailyMeal('breakfast')">記録</button>
+        <div class="meal-estimate" id="estimate-breakfast"></div>
+      </div>
+      <div class="daily-row">
+        <label for="daily-lunch">昼</label>
+        <input type="text" id="daily-lunch" placeholder="例: パスタ、サラダ">
+        <button class="entry-save" type="button" onclick="saveDailyMeal('lunch')">記録</button>
+        <div class="meal-estimate" id="estimate-lunch"></div>
+      </div>
+      <div class="daily-row">
+        <label for="daily-dinner">夜</label>
+        <input type="text" id="daily-dinner" placeholder="例: ご飯、焼き魚、みそ汁">
+        <button class="entry-save" type="button" onclick="saveDailyMeal('dinner')">記録</button>
+        <div class="meal-estimate" id="estimate-dinner"></div>
+      </div>
+      <div class="daily-row">
+        <label for="daily-snack">間食</label>
+        <input type="text" id="daily-snack" placeholder="例: チョコ、コーヒー">
+        <button class="entry-save" type="button" onclick="saveDailyMeal('snack')">記録</button>
+        <div class="meal-estimate" id="estimate-snack"></div>
+      </div>
+      <div class="today-summary" id="today-kcal-summary"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-kicker">ONE MORE NOTE</div>
+      <h2>今日のひとこと</h2>
+      <p class="desc">体調や気づいたことなど、自由に残せます。</p>
+      <div class="field">
+        <textarea id="daily-note" rows="3" placeholder="例: 午後から眠かった。夜はゆっくりできた。"></textarea>
+      </div>
+      <button class="btn mint" type="button" onclick="saveDailyNote()">ひとことを記録する</button>
+      <button class="btn" type="button" onclick="showDailyWrapUp()">今日のまとめを見る</button>
+      <div class="storage-err" id="daily-storage-err">このブラウザでは保存できませんでした。プライベートモードをオフにすると使えることがあります。</div>
+    </div>
+  </section>
+
   <!-- ============ タブ1: 体重チェック ============ -->
-  <section class="panel active" id="panel-check">
+  <section class="panel" id="panel-check">
+    <button class="btn small subpage-back" type="button" onclick="switchTab('more')">← その他へ戻る</button>
     <div class="card">
       <h2>あなたの体重をチェック</h2>
       <p class="desc">身長・体重・年齢を入れると、BMIと目安になる体重がわかります。数字は「良い・悪い」ではなく、いまの自分を知るためのものです。</p>
@@ -594,7 +870,7 @@
   <section class="panel" id="panel-record">
     <div class="card">
       <h2>今日の体重を記録</h2>
-      <p class="desc">朝トイレのあと、同じ条件で測るのがおすすめです。同じ日付で保存すると上書きされます。</p>
+      <p class="desc">「今日」からも記録できます。過去の日付を追加・修正したいときはこちらを使ってください。</p>
       <div class="field-row">
         <div class="field">
           <label for="rec-date">日付</label>
@@ -629,10 +905,17 @@
       <h2>記録一覧</h2>
       <div class="rec-list" id="rec-list"></div>
     </div>
+
+    <div class="card">
+      <h2>からだと食事の記録</h2>
+      <p class="desc">食べたものや体調を、日ごとにふり返れます。</p>
+      <div id="daily-history"></div>
+    </div>
   </section>
 
   <!-- ============ タブ3: カロリー計算 ============ -->
   <section class="panel" id="panel-cal">
+    <button class="btn small subpage-back" type="button" onclick="switchTab('more')">← その他へ戻る</button>
     <div class="card">
       <h2>1日の目安カロリーとPFC</h2>
       <p class="desc">あなたの基礎代謝から、無理のない1日の目安カロリーと栄養バランス（タンパク質・脂質・炭水化物）を計算します。基礎代謝より下げないのが「整える」コツです。</p>
@@ -769,6 +1052,7 @@
 
   <!-- ============ タブ5: 食事メモ ============ -->
   <section class="panel" id="panel-memo">
+    <button class="btn small subpage-back" type="button" onclick="switchTab('more')">← その他へ戻る</button>
     <div class="card">
       <h2>今日の食事メモ</h2>
       <p class="desc">食べたものと、そのときの気分をゆるっと残しましょう。記録は「反省」ではなく「観察」でOKです。食べ物の名前を書くと、目安カロリーも自動で出ますよ。</p>
@@ -799,6 +1083,70 @@
       <div class="diff-msg" id="memo-today" style="display:none;"></div>
       <div id="memo-list"></div>
       <div class="s-ing" style="margin-top:10px; text-align:center; color:var(--sub); font-size:11px;">※P=タンパク質・F=脂質・C=炭水化物。カロリーとPFCはメモの中の食べ物を辞書と照合した粗い目安です。量までは読めないので1人前ずつで数えています。辞書にない食べ物は含まれません</div>
+    </div>
+  </section>
+
+  <!-- ============ その他・初期設定 ============ -->
+  <section class="panel" id="panel-more">
+    <div class="card">
+      <div class="section-kicker">MY GUIDE</div>
+      <h2>わたしの目安を設定</h2>
+      <p class="desc">最初に一度入力すると、1日の目安カロリーが「今日」の画面に表示されます。数字は守らなければいけないルールではなく、食事を考えるときの目安です。</p>
+      <div class="field-row">
+        <div class="field">
+          <label for="profile-birth">生年月日</label>
+          <input type="date" id="profile-birth">
+        </div>
+        <div class="field">
+          <label>性別</label>
+          <div class="radio-cards two" style="margin-top:0;">
+            <label><input type="radio" name="profile-sex" value="female" checked><span class="r-title">女性</span></label>
+            <label><input type="radio" name="profile-sex" value="male"><span class="r-title">男性</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="profile-height">身長<span class="unit">cm</span></label>
+          <input type="number" id="profile-height" inputmode="decimal" placeholder="例: 158">
+        </div>
+        <div class="field">
+          <label for="profile-weight">体重<span class="unit">kg</span></label>
+          <input type="number" id="profile-weight" inputmode="decimal" placeholder="例: 52.5">
+        </div>
+      </div>
+      <div class="field">
+        <label for="profile-activity">ふだんの活動量</label>
+        <select id="profile-activity">
+          <option value="1.2">デスクワーク中心・運動はほとんどしない</option>
+          <option value="1.375">週1〜3回の軽い運動・お散歩など</option>
+          <option value="1.55">週3〜5回の運動・立ち仕事が多い</option>
+          <option value="1.725">ほぼ毎日運動・体を動かす仕事</option>
+        </select>
+      </div>
+      <div class="err" id="profile-err"></div>
+      <button class="btn" type="button" onclick="saveProfileSetup()">目安カロリーを計算して保存</button>
+      <div class="today-summary" id="profile-result" style="display:none;"></div>
+    </div>
+
+    <div class="card">
+      <h2>便利な機能</h2>
+      <div class="tool-grid">
+        <button class="tool-button" type="button" onclick="switchTab('check')"><span>⚖️</span>BMI・体重の目安</button>
+        <button class="tool-button" type="button" onclick="switchTab('cal')"><span>🍽️</span>詳しいカロリー・PFC</button>
+        <button class="tool-button" type="button" onclick="switchTab('memo')"><span>📖</span>以前の食事メモ</button>
+        <button class="tool-button" type="button" onclick="switchTab('tips')"><span>🥬</span>食事のヒント</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>記録のバックアップ</h2>
+      <p class="desc">記録はこの端末のブラウザに保存されています。機種変更や履歴削除に備えて、ときどき保存しておくと安心です。</p>
+      <div class="backup-row">
+        <button class="btn mint" type="button" onclick="exportBackup()">記録を保存する</button>
+        <label class="btn file-label">記録を戻す<input type="file" id="backup-file" accept="application/json" onchange="importBackup(this.files[0])"></label>
+      </div>
+      <div class="err" id="backup-msg"></div>
     </div>
   </section>
 
@@ -1207,6 +1555,7 @@ function ageBmiRange(age) {
 const KEY_MEMO = 'totono-diet-memo-v1';
 const KEY_WEIGHT = 'totono-diet-weight-v1';
 const KEY_PROFILE = 'totono-diet-profile-v1';
+const KEY_DAILY = 'totono-diet-daily-v2';
 
 // ============================================================
 // === ユーティリティ ===
@@ -1266,8 +1615,15 @@ function saveJson(key, obj) {
 function switchTab(id) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('panel-' + id).classList.add('active');
-  document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add('active');
+  const panel = document.getElementById('panel-' + id);
+  if (!panel) return;
+  panel.classList.add('active');
+  const directBtn = document.querySelector(`.tab-btn[data-tab="${id}"]`);
+  const parentBtn = document.querySelector('.tab-btn[data-tab="more"]');
+  (directBtn || parentBtn)?.classList.add('active');
+  if (id === 'today') renderToday();
+  if (id === 'record') { renderRecords(); renderDailyHistory(); }
+  if (id === 'more') renderProfileSetup();
   window.scrollTo({ top: 0 });
 }
 
@@ -1343,8 +1699,8 @@ function runCheck() {
       ${biyoBelow ? `<div class="w-note">⚠️ あなたの年齢の健康範囲より下です。${over50 ? '目標にしないことをおすすめします' : 'ご注意を'}</div>` : ''}
     </div>
     <div class="w-card">
-      <div class="w-name">🌙 シンデレラ体重</div>
-      <div class="w-bmi">BMI 18</div>
+      <div class="w-name">🌙 BMI 18の参考値</div>
+      <div class="w-bmi">健康範囲より低いため、目標には非推奨</div>
       <div class="w-val">${cinde.toFixed(1)}<small> kg</small></div>
       <div class="w-note">⚠️ 健康範囲より下です。${over50 ? '体調をくずしやすいため、目標にしないでくださいね' : '目標にはおすすめしません'}</div>
     </div>`;
@@ -1444,7 +1800,7 @@ function renderRecords() {
     if (Math.abs(diff) <= 0.3) {
       msg = `前回から ${diff >= 0 ? '+' : ''}${diff.toFixed(1)}kg。このくらいは誤差の範囲です。気にしなくて大丈夫🌸`;
     } else if (diff < 0) {
-      msg = `前回から ${diff.toFixed(1)}kg。いい流れですね。このままゆるやかに🌿`;
+      msg = `前回から ${diff.toFixed(1)}kg。下がった日も、今日だけで決めずに1週間の流れで見ていきましょう🌿`;
     } else {
       msg = `前回から +${diff.toFixed(1)}kg。1日の増減はよくあること。1週間の流れで見ていきましょう☕`;
     }
@@ -1896,6 +2252,439 @@ function renderMemos() {
 }
 
 // ============================================================
+// === v2: 今日の記録・やさしい返事 ===
+// ============================================================
+function getDailyLogs() {
+  const logs = loadJson(KEY_DAILY, {});
+  return logs && typeof logs === 'object' && !Array.isArray(logs) ? logs : {};
+}
+
+function getDailyLog(date = todayStr()) {
+  const saved = getDailyLogs()[date] || {};
+  return {
+    date,
+    meals: {},
+    ...saved,
+    meals: { ...(saved.meals || {}) }
+  };
+}
+
+function saveDailyLog(log) {
+  const logs = getDailyLogs();
+  log.updatedAt = new Date().toISOString();
+  logs[log.date] = log;
+  const ok = saveJson(KEY_DAILY, logs);
+  document.getElementById('daily-storage-err')?.classList.toggle('show', !ok);
+  return ok;
+}
+
+function currentDailyDate() {
+  return document.getElementById('daily-date')?.value || todayStr();
+}
+
+function formatJpDate(date) {
+  const d = new Date(date + 'T00:00:00');
+  if (Number.isNaN(d.getTime())) return date;
+  return new Intl.DateTimeFormat('ja-JP', {
+    month: 'long', day: 'numeric', weekday: 'short'
+  }).format(d);
+}
+
+function showReply(message) {
+  const el = document.getElementById('daily-reply');
+  if (!el) return;
+  el.textContent = message;
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+}
+
+function chooseMessage(items) {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+function truncateForReply(text, max = 28) {
+  const clean = text.replace(/\s+/g, ' ').trim();
+  return clean.length > max ? clean.slice(0, max) + '…' : clean;
+}
+
+function changeDailyDate() {
+  renderToday();
+  showReply(`${formatJpDate(currentDailyDate())}の記録を見ているよ。書き足したいところからどうぞ☺️`);
+}
+
+function saveDailyWeight() {
+  const input = document.getElementById('daily-weight');
+  const weight = toNum(input.value);
+  if (isNaN(weight) || weight < 25 || weight > 200) {
+    showReply('体重はkgで入力してね。例：52.5');
+    input.focus();
+    return;
+  }
+  const date = currentDailyDate();
+  const log = getDailyLog(date);
+  log.weight = weight;
+  if (!saveDailyLog(log)) return;
+
+  const records = getRecords().filter(r => r.date !== date);
+  records.push({ date, weight });
+  records.sort((a, b) => a.date < b.date ? -1 : 1);
+  saveJson(KEY_WEIGHT, records);
+  showReply(chooseMessage([
+    `今日は${weight.toFixed(1)}kgだったんだね。今日の数字だけで決めず、流れを見ていこうね。`,
+    `${weight.toFixed(1)}kg、記録できたよ。今の自分を知る一歩になったね。`,
+    `今日の体重を残せたね。増えた日も減った日も、まずはそのまま見てあげよう。`
+  ]));
+  renderKcalSummary(log);
+}
+
+const DAILY_MEAL_LABELS = {
+  breakfast: '朝', lunch: 'お昼', dinner: '夜', snack: '間食'
+};
+
+function saveDailyMeal(kind) {
+  const input = document.getElementById('daily-' + kind);
+  const text = input.value.trim();
+  if (!text) {
+    showReply(`${DAILY_MEAL_LABELS[kind]}に食べたものを、ひとことだけでも書いてみてね。`);
+    input.focus();
+    return;
+  }
+  const log = getDailyLog(currentDailyDate());
+  log.meals[kind] = text;
+  if (!saveDailyLog(log)) return;
+  const short = truncateForReply(text);
+  const messages = kind === 'snack' ? [
+    `間食は「${short}」だったんだね。隠さず残せたことが大切だよ。`,
+    `「${short}」を食べたんだね。おやつも今日の大事な記録だよ。`
+  ] : [
+    `${DAILY_MEAL_LABELS[kind]}は「${short}」を食べたんだね。記録できたよ☺️`,
+    `「${short}」、今日の${DAILY_MEAL_LABELS[kind]}として残したよ。書けたことが一歩だね。`,
+    `${DAILY_MEAL_LABELS[kind]}の記録、ありがとう。今日の食事が少しずつ見えてきたね。`
+  ];
+  showReply(chooseMessage(messages));
+  renderMealEstimate(kind, text);
+  renderKcalSummary(log);
+}
+
+function renderMealEstimate(kind, text) {
+  const el = document.getElementById('estimate-' + kind);
+  if (!el) return;
+  const est = text ? estimateKcal(text) : null;
+  el.textContent = est
+    ? `見つかった食品の目安：約${est.total.toLocaleString()}kcal（量は一般的な1人前で計算）`
+    : (text ? 'カロリーは出せなかったけれど、食事の記録はできています。' : '');
+}
+
+function saveDailySelect(field, value) {
+  if (!value) return;
+  const log = getDailyLog(currentDailyDate());
+  log[field] = value;
+  if (!saveDailyLog(log)) return;
+
+  let message = '今日の状態をひとつ記録できたね。';
+  if (field === 'sleep') {
+    message = value === '6時間未満'
+      ? '昨日は睡眠が少し短かったんだね。今日はできる範囲で、早めに休めるといいね。'
+      : `${value}眠れたんだね。睡眠も食事や体重と一緒に見ていこう。`;
+  }
+  if (field === 'fatigue') {
+    message = value === 'かなり疲れた'
+      ? '今日は疲れがたまっているみたい。できることを少なめにして、ゆっくりする時間も作ろうね。'
+      : value === '少し疲れた'
+        ? '少し疲れを感じているんだね。頑張りすぎない一日にしよう。'
+        : '今日は元気なんだね。その感覚も記録しておくと、あとで大切な手がかりになるよ。';
+  }
+  if (field === 'stress') {
+    message = ['少しざわざわ', 'しんどい'].includes(value)
+      ? `今日は気持ちが「${value}」なんだね。食事を整える前に、ひと息つく時間も大切にしよう。`
+      : `今日の気分は「${value}」なんだね。今の気持ちを残せたよ。`;
+  }
+  if (field === 'bowel') {
+    message = `今日のおなかは「${value}」なんだね。食事や睡眠と一緒に、ゆっくり流れを見ていこう。`;
+  }
+  showReply(message);
+}
+
+function saveDailyNote() {
+  const input = document.getElementById('daily-note');
+  const text = input.value.trim();
+  if (!text) {
+    showReply('今日感じたことを、ひとことだけでも書いてみてね。');
+    input.focus();
+    return;
+  }
+  const log = getDailyLog(currentDailyDate());
+  log.note = text;
+  if (!saveDailyLog(log)) return;
+  showReply(chooseMessage([
+    '今日の気づきを残せたね。あとから見返すと、自分の傾向を知る手がかりになるよ。',
+    'ひとこと記録できたね。言葉にしてあげるだけでも、今日の自分を見つめる時間になるよ。'
+  ]));
+}
+
+function dailyMealTotal(log) {
+  return Object.values(log.meals || {}).reduce((sum, text) => {
+    const est = estimateKcal(text);
+    return sum + (est ? est.total : 0);
+  }, 0);
+}
+
+function renderKcalSummary(log = getDailyLog(currentDailyDate())) {
+  const el = document.getElementById('today-kcal-summary');
+  if (!el) return;
+  const total = dailyMealTotal(log);
+  const prof = loadJson(KEY_PROFILE, {});
+  if (!total) {
+    el.innerHTML = typeof prof.targetKcal === 'number'
+      ? `<strong>あなたの1日の目安：約${prof.targetKcal.toLocaleString()}kcal</strong><br>食事を記録すると、見つかった食品の合計がここに表示されます。`
+      : '基本情報を設定すると、あなたの1日の目安カロリーを表示できます。';
+    return;
+  }
+  const target = typeof prof.targetKcal === 'number'
+    ? `<br>あなたの1日の目安：約${prof.targetKcal.toLocaleString()}kcal`
+    : '';
+  el.innerHTML = `<strong>今日の記録から分かった分：約${total.toLocaleString()}kcal</strong>${target}<br>量や辞書にない食品は計算できないため、あくまで目安です。`;
+}
+
+function showDailyWrapUp() {
+  const log = getDailyLog(currentDailyDate());
+  const meals = Object.keys(log.meals || {}).filter(k => log.meals[k]);
+  const bodyCount = ['weight', 'sleep', 'fatigue', 'stress', 'bowel'].filter(k => log[k]).length;
+  const count = meals.length + bodyCount + (log.note ? 1 : 0);
+  if (!count) {
+    showReply('まだ記録がなくても大丈夫。今日いちばん書きやすいところを、ひとつだけ残してみよう。');
+    return;
+  }
+  let tail = '今日の自分をちゃんと見てあげられたね。全部埋めなくても大丈夫だよ。';
+  if (log.fatigue === 'かなり疲れた' || log.stress === 'しんどい') {
+    tail = '今日は頑張ることより、休むことを優先してよさそう。記録できた自分にもやさしくしてあげよう。';
+  } else if (log.sleep === '6時間未満') {
+    tail = '睡眠が短めの日は、食欲や疲れも一緒に揺れやすいもの。今日は早めに休めるといいね。';
+  }
+  showReply(`${count}項目、今日のことを残せたよ。${tail}`);
+}
+
+function renderToday() {
+  const dateInput = document.getElementById('daily-date');
+  if (!dateInput) return;
+  if (!dateInput.value) dateInput.value = todayStr();
+  const date = dateInput.value;
+  const log = getDailyLog(date);
+  document.getElementById('today-label').textContent = formatJpDate(date);
+  document.getElementById('daily-weight').value = typeof log.weight === 'number' ? log.weight : '';
+  ['breakfast', 'lunch', 'dinner', 'snack'].forEach(kind => {
+    const text = log.meals[kind] || '';
+    document.getElementById('daily-' + kind).value = text;
+    renderMealEstimate(kind, text);
+  });
+  ['sleep', 'fatigue', 'stress', 'bowel'].forEach(field => {
+    document.getElementById('daily-' + field).value = log[field] || '';
+  });
+  document.getElementById('daily-note').value = log.note || '';
+  renderDailyProfileStrip();
+  renderKcalSummary(log);
+}
+
+function renderDailyProfileStrip() {
+  const el = document.getElementById('daily-profile-strip');
+  if (!el) return;
+  const prof = loadJson(KEY_PROFILE, {});
+  el.replaceChildren();
+  const text = document.createElement('span');
+  if (typeof prof.targetKcal === 'number') {
+    text.innerHTML = `1日の目安 <strong>約${prof.targetKcal.toLocaleString()}kcal</strong>`;
+  } else {
+    text.textContent = 'まずは、あなたの1日の目安を設定しましょう';
+  }
+  const button = document.createElement('button');
+  button.className = 'text-link';
+  button.type = 'button';
+  button.textContent = typeof prof.targetKcal === 'number' ? '設定を見る' : '設定する';
+  button.onclick = () => switchTab('more');
+  el.append(text, button);
+}
+
+function renderDailyHistory() {
+  const root = document.getElementById('daily-history');
+  if (!root) return;
+  const logs = getDailyLogs();
+  const dates = Object.keys(logs).sort().reverse();
+  root.replaceChildren();
+  if (!dates.length) {
+    const p = document.createElement('p');
+    p.className = 'desc';
+    p.textContent = '「今日」の画面で記録すると、ここに日ごとの内容が表示されます。';
+    root.appendChild(p);
+    return;
+  }
+  dates.slice(0, 30).forEach(date => {
+    const log = getDailyLog(date);
+    const item = document.createElement('div');
+    item.className = 'history-day';
+    const head = document.createElement('div');
+    head.className = 'history-day-head';
+    const title = document.createElement('strong');
+    title.textContent = formatJpDate(date);
+    const weight = document.createElement('span');
+    weight.textContent = typeof log.weight === 'number' ? `${log.weight.toFixed(1)}kg` : '';
+    head.append(title, weight);
+    item.appendChild(head);
+    const mealLines = Object.entries(log.meals || {})
+      .filter(([, value]) => value)
+      .map(([key, value]) => `${DAILY_MEAL_LABELS[key]}：${value}`);
+    if (mealLines.length || log.note) {
+      const body = document.createElement('div');
+      body.className = 'history-day-body';
+      body.textContent = [...mealLines, ...(log.note ? [`メモ：${log.note}`] : [])].join('\n');
+      item.appendChild(body);
+    }
+    const tags = document.createElement('div');
+    tags.className = 'history-tags';
+    [['sleep', '睡眠'], ['fatigue', '疲れ'], ['stress', '気分'], ['bowel', 'おなか']].forEach(([key, label]) => {
+      if (!log[key]) return;
+      const tag = document.createElement('span');
+      tag.className = 'history-tag';
+      tag.textContent = `${label}：${log[key]}`;
+      tags.appendChild(tag);
+    });
+    if (tags.childNodes.length) item.appendChild(tags);
+    root.appendChild(item);
+  });
+}
+
+function calculateAgeFromBirth(birth) {
+  const born = new Date(birth + 'T00:00:00');
+  if (Number.isNaN(born.getTime())) return null;
+  const now = new Date();
+  let age = now.getFullYear() - born.getFullYear();
+  const beforeBirthday = now.getMonth() < born.getMonth()
+    || (now.getMonth() === born.getMonth() && now.getDate() < born.getDate());
+  if (beforeBirthday) age--;
+  return age;
+}
+
+function calculateTargets(age, sex, height, weight, activity) {
+  const bmr = 10 * weight + 6.25 * height - 5 * age + (sex === 'female' ? -161 : 5);
+  const tdee = bmr * activity;
+  const bmi = weight / ((height / 100) ** 2);
+  const range = ageBmiRange(age);
+  let target = bmi < range.lower ? Math.max(tdee, 1200) : Math.max(tdee - 250, bmr, 1200);
+  target = Math.round(target / 10) * 10;
+  return {
+    bmr: Math.round(bmr),
+    tdee: Math.round(tdee),
+    targetKcal: target,
+    targetP: Math.round(target * .20 / 4),
+    targetF: Math.round(target * .25 / 9),
+    targetC: Math.round(target * .55 / 4)
+  };
+}
+
+function saveProfileSetup() {
+  const err = document.getElementById('profile-err');
+  hideErr(err);
+  const birth = document.getElementById('profile-birth').value;
+  const age = calculateAgeFromBirth(birth);
+  const height = toNum(document.getElementById('profile-height').value);
+  const weight = toNum(document.getElementById('profile-weight').value);
+  const sex = document.querySelector('input[name="profile-sex"]:checked').value;
+  const activity = parseFloat(document.getElementById('profile-activity').value);
+  if (age === null || age < 15 || age > 100) {
+    err.textContent = '生年月日を確認してください（15〜100歳の方向けです）。';
+    err.classList.add('show'); return;
+  }
+  if (isNaN(height) || height < 100 || height > 220) {
+    err.textContent = '身長をcmで入力してください（例：158）。';
+    err.classList.add('show'); return;
+  }
+  if (isNaN(weight) || weight < 25 || weight > 200) {
+    err.textContent = '体重をkgで入力してください（例：52.5）。';
+    err.classList.add('show'); return;
+  }
+  const targets = calculateTargets(age, sex, height, weight, activity);
+  const prof = {
+    ...loadJson(KEY_PROFILE, {}),
+    birth, age, sex, height, weight, activity,
+    ...targets
+  };
+  if (!saveJson(KEY_PROFILE, prof)) {
+    err.textContent = '保存できませんでした。ブラウザの設定を確認してください。';
+    err.classList.add('show'); return;
+  }
+  document.getElementById('profile-result').style.display = 'block';
+  document.getElementById('profile-result').innerHTML = `<strong>あなたの1日の目安：約${targets.targetKcal.toLocaleString()}kcal</strong><br>守らなければいけない数字ではなく、食事を考えるときの目安にしてくださいね。`;
+  document.getElementById('chk-height').value = height;
+  document.getElementById('chk-weight').value = weight;
+  document.getElementById('chk-age').value = age;
+  document.getElementById('cal-age').value = age;
+  document.getElementById('cal-height').value = height;
+  document.getElementById('cal-weight').value = weight;
+  document.querySelector(`input[name="cal-sex"][value="${sex}"]`).checked = true;
+  document.querySelector(`input[name="cal-act"][value="${activity}"]`).checked = true;
+  renderDailyProfileStrip();
+}
+
+function renderProfileSetup() {
+  const prof = loadJson(KEY_PROFILE, {});
+  if (prof.birth) document.getElementById('profile-birth').value = prof.birth;
+  if (prof.height) document.getElementById('profile-height').value = prof.height;
+  if (prof.weight) document.getElementById('profile-weight').value = prof.weight;
+  if (prof.sex) {
+    const sex = document.querySelector(`input[name="profile-sex"][value="${prof.sex}"]`);
+    if (sex) sex.checked = true;
+  }
+  if (prof.activity) document.getElementById('profile-activity').value = String(prof.activity);
+  const result = document.getElementById('profile-result');
+  if (typeof prof.targetKcal === 'number') {
+    result.style.display = 'block';
+    result.innerHTML = `<strong>現在の1日の目安：約${prof.targetKcal.toLocaleString()}kcal</strong><br>${prof.age ? `${prof.age}歳・` : ''}${prof.height || '-'}cm・${prof.weight || '-'}kgの設定です。`;
+  }
+}
+
+function exportBackup() {
+  const data = {
+    version: 2,
+    exportedAt: new Date().toISOString(),
+    profile: loadJson(KEY_PROFILE, {}),
+    weights: loadJson(KEY_WEIGHT, []),
+    memos: loadJson(KEY_MEMO, []),
+    daily: loadJson(KEY_DAILY, {})
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `totono-backup-${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importBackup(file) {
+  if (!file) return;
+  const msg = document.getElementById('backup-msg');
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!data || typeof data !== 'object' || !('version' in data)) throw new Error('invalid');
+      if (!confirm('現在の記録をバックアップの内容に置き換えます。よろしいですか？')) return;
+      saveJson(KEY_PROFILE, data.profile || {});
+      saveJson(KEY_WEIGHT, Array.isArray(data.weights) ? data.weights : []);
+      saveJson(KEY_MEMO, Array.isArray(data.memos) ? data.memos : []);
+      saveJson(KEY_DAILY, data.daily && typeof data.daily === 'object' ? data.daily : {});
+      msg.textContent = '記録を戻しました。「今日」や「ふり返り」で確認できます。';
+      msg.classList.add('show');
+      renderToday(); renderRecords(); renderMemos(); renderDailyHistory(); renderProfileSetup();
+    } catch (e) {
+      msg.textContent = 'このファイルは読み込めませんでした。totonoから保存したJSONファイルを選んでください。';
+      msg.classList.add('show');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ============================================================
 // === 初期化 ===
 // ============================================================
 (function init() {
@@ -1910,6 +2699,7 @@ function renderMemos() {
 
   document.getElementById('rec-date').value = todayStr();
   document.getElementById('memo-date').value = todayStr();
+  document.getElementById('daily-date').value = todayStr();
 
   const prof = loadJson(KEY_PROFILE, {});
   if (prof.height) document.getElementById('chk-height').value = prof.height;
@@ -1922,6 +2712,9 @@ function renderMemos() {
   renderIngChips();
   renderRecords();
   renderMemos();
+  renderToday();
+  renderDailyHistory();
+  renderProfileSetup();
 })();
 </script>
 </body>
