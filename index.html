@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#E8A0A0">
-<meta name="description" content="ととのサロンのダイエットサポート。体重チェック・体重記録・カロリー計算・食べ方のコツを、がんばらないトーンでサポートします。">
-<title>整えるダイエットサポート | ととのサロン</title>
+<meta name="description" content="まいにちtotono。体重・食事・体調を記録しながら、今日のねこもち占いのひとことを受け取れます。">
+<title>まいにちtotono | ととのサロン</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -550,7 +550,9 @@
   .today-hero .today-date { color: var(--coral-dark); font-size: 12px; font-weight: 700; letter-spacing: .08em; }
   .today-hero h2 { display: block; font-size: 20px; line-height: 1.65; margin-top: 5px; }
   .today-hero h2::before { display: none; }
+  .today-hero .today-cat { color: var(--coral-dark); font-size: 14px; font-weight: 700; margin-top: 8px; }
   .today-hero p { color: var(--sub); font-size: 13px; margin-top: 5px; }
+  .today-hero #today-cat-message { color: var(--text); font-size: 16px; line-height: 1.8; margin-top: 10px; }
   .profile-strip {
     display: flex;
     gap: 10px;
@@ -670,7 +672,7 @@
 
 <header>
   <div class="salon-name">totono サロン</div>
-  <h1>整えるダイエットサポート</h1>
+  <h1>まいにちtotono</h1>
   <p class="lead">記録して、気づいて、今日の自分をやさしく整える。</p>
 </header>
 
@@ -687,8 +689,9 @@
   <section class="panel active" id="panel-today">
     <div class="today-hero">
       <div class="today-date" id="today-label"></div>
-      <h2>良い・悪いを決めずに<br>今日の自分を見ていきましょう</h2>
-      <p>全部書かなくても大丈夫。ひとつ記録するたびに、少しずつ今日が見えてきます。</p>
+      <h2>今日のねこもち占い</h2>
+      <div class="today-cat" id="today-cat"></div>
+      <p id="today-cat-message"></p>
     </div>
 
     <div class="profile-strip" id="daily-profile-strip"></div>
@@ -2254,6 +2257,25 @@ function formatJpDate(date) {
   }).format(d);
 }
 
+// 日付の数字を足して1桁に縮約し、その日のねこを決める。
+// ねこもち占いの「今日の数秘」と同じ計算（例: 2026-01-28 → 3）。
+const DAILY_CATS = {
+  1: { name: 'いちばんねこ', message: '小さな一歩でいいよ。今日は自分で決めたことを、ひとつやってみよう。' },
+  2: { name: 'なかよしねこ', message: '誰かに合わせすぎなくて大丈夫。自分の気持ちも、そっと聞いてあげてね。' },
+  3: { name: 'ひらめきねこ', message: '「楽しそう」と思った気持ちを大切に。少し寄り道してもいいよ。' },
+  4: { name: 'こつこつねこ', message: '全部できなくても大丈夫。今日のひとつを重ねたら、それで十分だよ。' },
+  5: { name: 'ふわりねこ', message: '予定どおりじゃなくても平気。今の自分に合うペースを選んでね。' },
+  6: { name: 'まもりねこ', message: '誰かを大切にするのと同じくらい、今日は自分もいたわってね。' },
+  7: { name: 'ふしぎねこ', message: '答えを急がなくていいよ。静かな時間に、心の声を聞いてみてね。' },
+  8: { name: 'まっすぐねこ', message: 'がんばる力はもうあるよ。今日は休むことも、自分で選んでいいんだよ。' },
+  9: { name: 'あんしんねこ', message: '抱えたものを少し置いてみよう。あなたの「大丈夫」も大切にしてね。' }
+};
+
+function dailyCatForDate(date) {
+  let number = date.replace(/\D/g, '').split('').reduce((sum, digit) => sum + Number(digit), 0);
+  while (number > 9) number = String(number).split('').reduce((sum, digit) => sum + Number(digit), 0);
+  return DAILY_CATS[number];
+}
 function showReply(message) {
   const el = document.getElementById('daily-reply');
   if (!el) return;
@@ -2436,6 +2458,9 @@ function renderToday() {
   const date = dateInput.value;
   const log = getDailyLog(date);
   document.getElementById('today-label').textContent = formatJpDate(date);
+  const cat = dailyCatForDate(date);
+  document.getElementById('today-cat').textContent = cat.name + 'からひとこと';
+  document.getElementById('today-cat-message').textContent = '「' + cat.message + '」';
   document.getElementById('daily-weight').value = typeof log.weight === 'number' ? log.weight : '';
   ['breakfast', 'lunch', 'dinner', 'snack'].forEach(kind => {
     const text = log.meals[kind] || '';

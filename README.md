@@ -1,12 +1,13 @@
-# 整えるダイエットサポート | ととのサロン
+# まいにちtotono | ととのサロン
 
 ととのサロンの受講生向け、やさしい体重・食事・体調記録ツール。スマホのブラウザで開くだけで使えます。
 
-**公開URL**: https://tomominblog.github.io/totono-diet-support/
+**公開URL**: https://totono-diet-support.pages.dev/
 
 ## 機能
 
 - ○ **今日の記録** — 体重、朝・昼・夜・間食、睡眠、疲れ、気分、おなか、自由メモを日ごとに保存
+- 🐱 **今日のねこもち占い** — 日付の数字からその日のねこを決め、ひとことを表示
 - 💬 **入力ごとの返事** — 記録するたびに、内容に合わせた短くやさしいメッセージを表示
 - 🍽️ **わたしの目安** — 生年月日・性別・身長・体重・活動量から、1日の目安カロリーを計算
 - 📈 **ふり返り** — 体重グラフと、食事・体調の記録を日ごとに表示
@@ -27,4 +28,4 @@
 
 ## 更新方法
 
-このフォルダ（Vault内 `01_totono-salon/diet-support/`）で編集 → commit → push で GitHub Pages に自動反映されます。
+このフォルダ（Vault内 `01_totono-salon/diet-support/`）で編集・commitし、`main` へpushするとCloudflare Pagesに自動反映されます。GitHub Pagesも更新する場合は `main:gh-pages` へpushします。

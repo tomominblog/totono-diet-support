@@ -1,7 +1,7 @@
 {
-  "name": "ととのサロン 整えるダイエットサポート",
-  "short_name": "整えるダイエット",
-  "description": "体重・食事・体調を記録するたび、やさしい言葉で伴走するダイエットサポート。",
+  "name": "ととのサロン まいにちtotono",
+  "short_name": "まいにちtotono",
+  "description": "体重・食事・体調を記録し、その日のねこもち占いのひとことも受け取れます。",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
