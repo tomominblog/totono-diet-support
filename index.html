@@ -5,20 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#E8A0A0">
 <meta name="description" content="まいにちtotono。体重・食事・体調を記録しながら、今日のねこもち占いのひとことを受け取れます。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="まいにちtotono | ととのサロン">
-<meta property="og:description" content="体重・食事・体調を無理なく記録。今日のねこもち占いのひとことも。">
-<meta property="og:url" content="https://totono-diet-support.pages.dev/">
-<meta property="og:image" content="https://totono-diet-support.pages.dev/assets/main-visual.png">
-<meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="1672">
-<meta property="og:image:height" content="941">
-<meta property="og:image:alt" content="まいにちtotono。記録して、気づいて、今日の自分をやさしく整える。">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="まいにちtotono | ととのサロン">
-<meta name="twitter:description" content="体重・食事・体調を無理なく記録。今日のねこもち占いのひとことも。">
-<meta name="twitter:image" content="https://totono-diet-support.pages.dev/assets/main-visual.png">
-<meta name="twitter:image:alt" content="まいにちtotono。記録して、気づいて、今日の自分をやさしく整える。">
 <title>まいにちtotono | ととのサロン</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png" type="image/png">
@@ -59,15 +45,20 @@
 
   /* ===== ヘッダー ===== */
   header {
-    background: #FBF7F5;
-    padding: 0 16px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #FBEDED 0%, #FDF9F7 60%, #EAF4F2 100%);
+    padding: 34px 20px 26px;
+    text-align: center;
   }
-  .site-visual { display: block; width: 100%; max-width: 840px; height: auto; margin: 0 auto; }
-  .mobile-hero-caption { display: none; }
-  @media (max-width: 600px) { .mobile-hero-caption { display: block; padding: 0 4px 12px; text-align: center; color: var(--sub); font-size: 12px; } }
-  .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-  .guide-illustration { display: block; width: min(100%, 360px); height: auto; margin: 12px auto 2px; }
-  .guide-illustration.after-note { margin-top: 18px; }
+  header .salon-name {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--coral-dark);
+    font-weight: 700;
+  }
+  header h1 { font-size: 22px; margin-top: 4px; }
+  header p.lead { font-size: 13px; color: var(--sub); margin-top: 6px; }
 
   /* ===== タブバー ===== */
   nav.tabs {
@@ -680,9 +671,9 @@
 <body>
 
 <header>
-  <h1 class="visually-hidden">まいにちtotono</h1>
-  <img class="site-visual" src="assets/main-visual.png" width="1672" height="941" fetchpriority="high" decoding="async" alt="紫の服を着た案内役。記録して、気づいて、今日の自分をやさしく整える。体重・食事・体調を無理なく記録できるサポートサイト。">
-  <p class="mobile-hero-caption">体重・食事・体調を、無理なく記録できるサポートサイト</p>
+  <div class="salon-name">totono サロン</div>
+  <h1>まいにちtotono</h1>
+  <p class="lead">記録して、気づいて、今日の自分をやさしく整える。</p>
 </header>
 
 <nav class="tabs">
@@ -804,13 +795,11 @@
       <button class="btn" type="button" onclick="showDailyWrapUp()">今日のまとめを見る</button>
       <div class="storage-err" id="daily-storage-err">このブラウザでは保存できませんでした。プライベートモードをオフにすると使えることがあります。</div>
     </div>
-    <img class="guide-illustration after-note" src="assets/today-reflection.png" width="1254" height="1254" loading="lazy" decoding="async" alt="案内役からのひとこと。今日の自分を見ていきましょう。">
   </section>
 
   <!-- ============ タブ1: 体重チェック ============ -->
   <section class="panel" id="panel-check">
     <button class="btn small subpage-back" type="button" onclick="switchTab('more')">← その他へ戻る</button>
-    <img class="guide-illustration" src="assets/numbers-note.png" width="1254" height="1254" loading="lazy" decoding="async" alt="案内役からのひとこと。数字は判定ではなく、今の自分を知るためのメモです。">
     <div class="card">
       <h2>あなたの体重をチェック</h2>
       <p class="desc">身長・体重・年齢を入れると、BMIと目安になる体重がわかります。数字は「良い・悪い」ではなく、いまの自分を知るためのものです。</p>
@@ -996,7 +985,6 @@
 
   <!-- ============ タブ4: 食べ方のコツ ============ -->
   <section class="panel" id="panel-tips">
-    <img class="guide-illustration" src="assets/gentle-step.png" width="1254" height="1254" loading="lazy" decoding="async" alt="案内役からのひとこと。無理なく、できることから少しずつ。">
     <div class="card">
       <h2>整える食べ方のコツ</h2>
       <p class="desc">全部やらなくて大丈夫。「これならできそう」を1つだけ選んで、今日から始めてみてくださいね。</p>

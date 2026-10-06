@@ -15,12 +15,6 @@
 - ⚖️ **詳しいツール** — BMI・年齢別の体重範囲、カロリー・PFCの詳細計算
 - 💾 **バックアップ** — 端末内の記録をJSONで保存・復元
 
-## 画像
-
-- assets/main-visual.png — トップのメイン画像とリンク共有用画像
-- assets/today-reflection.png — 「今日」の記録画面
-- assets/numbers-note.png — 体重チェック画面
-- assets/gentle-step.png — 食事のヒント画面
 ## 技術メモ
 
 - 単一 `index.html`（バニラHTML/CSS/JS、ビルド不要）
