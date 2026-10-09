@@ -659,47 +659,6 @@
     background: linear-gradient(155deg, #fff 0%, #fff 58%, var(--mint-light) 100%);
     border: 1.5px solid var(--border);
   }
-  .cat-growth-summary {
-    display: grid;
-    grid-template-columns: 84px 1fr;
-    gap: 14px;
-    align-items: center;
-    background: linear-gradient(135deg, var(--coral-light), #fff);
-    border-radius: 16px;
-    padding: 14px;
-    margin-top: 13px;
-  }
-  .growth-cat {
-    display: grid;
-    place-items: center;
-    min-height: 76px;
-    font-size: 48px;
-    line-height: 1;
-    filter: drop-shadow(0 4px 4px rgba(132, 91, 91, .12));
-    transform-origin: 50% 100%;
-  }
-  .growth-cat[data-stage="1"] { font-size: 55px; }
-  .growth-cat[data-stage="2"] { font-size: 62px; }
-  .growth-cat[data-stage="3"] { font-size: 68px; }
-  .growth-cat[data-stage="4"] { font-size: 74px; }
-  .growth-copy strong { display: block; color: var(--coral-dark); font-size: 15px; }
-  .growth-copy p { color: var(--sub); font-size: 12px; line-height: 1.55; margin-top: 3px; }
-  .growth-count { font-size: 12px; font-weight: 700; margin-top: 7px; }
-  .growth-track {
-    height: 8px;
-    overflow: hidden;
-    background: #fff;
-    border-radius: 999px;
-    margin-top: 7px;
-  }
-  .growth-track > span {
-    display: block;
-    width: 0;
-    height: 100%;
-    background: linear-gradient(90deg, var(--coral), var(--mint));
-    border-radius: inherit;
-    transition: width .35s ease;
-  }
   .paw-calendar-nav {
     display: grid;
     grid-template-columns: 44px 1fr 44px;
@@ -744,12 +703,26 @@
   .calendar-day .day-number { position: absolute; top: 4px; left: 7px; }
   .calendar-day .paw-stamp {
     position: absolute;
+    top: 4px;
     right: 4px;
-    bottom: 3px;
-    font-size: 20px;
+    font-size: 14px;
     line-height: 1;
     transform: rotate(-10deg);
     animation: pawStamp .28s ease-out both;
+  }
+  .calendar-day .calendar-weight {
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    bottom: 4px;
+    overflow: hidden;
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1.1;
+    text-align: center;
+    white-space: nowrap;
   }
   @keyframes pawStamp { from { opacity: 0; transform: rotate(-10deg) scale(1.5); } to { opacity: 1; transform: rotate(-10deg) scale(1); } }
   .calendar-footer {
@@ -789,15 +762,13 @@
     .daily-row { grid-template-columns: 52px 1fr auto; }
     .entry-save { padding: 8px 10px; }
     .select-grid { grid-template-columns: 1fr; }
-    .cat-growth-summary { grid-template-columns: 70px 1fr; gap: 10px; padding: 12px; }
-    .growth-cat { min-height: 66px; }
     .paw-weekdays, .paw-calendar-grid { gap: 3px; }
-    .calendar-day { min-height: 40px; border-radius: 10px; }
-    .calendar-day .paw-stamp { font-size: 17px; }
+    .calendar-day { min-height: 44px; border-radius: 10px; }
+    .calendar-day .paw-stamp { font-size: 12px; }
+    .calendar-day .calendar-weight { font-size: 8px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .reply-bubble.pop, .calendar-day .paw-stamp { animation: none; }
-    .growth-track > span { transition: none; }
   }
 </style>
 </head>
@@ -971,16 +942,7 @@
     <div class="card paw-card">
       <div class="section-kicker">PAW CALENDAR</div>
       <h2>まいにちの足あと</h2>
-      <p class="desc">その日に何かひとつ記録すると、カレンダーにねこの足あとが付きます。</p>
-      <div class="cat-growth-summary" aria-live="polite">
-        <div class="growth-cat" id="growth-cat" data-stage="0" aria-hidden="true">🐱</div>
-        <div class="growth-copy">
-          <strong id="growth-name">ちいさな子ねこ</strong>
-          <p id="growth-status">最初の記録を待っているよ。</p>
-          <div class="growth-count" id="growth-count">足あと 0日</div>
-          <div class="growth-track" id="growth-track" role="progressbar" aria-label="次の成長まで" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0"><span id="growth-progress"></span></div>
-        </div>
-      </div>
+      <p class="desc">その日に何かひとつ記録すると足あとが付きます。体重を記録した日は数値も表示され、日付を押すと入力・修正できます。</p>
       <div class="paw-calendar-nav">
         <button class="month-button" type="button" onclick="movePawCalendar(-1)" aria-label="前の月を見る">‹</button>
         <h3 id="paw-calendar-month">今月</h3>
@@ -1685,13 +1647,6 @@ const KEY_WEIGHT = 'totono-diet-weight-v1';
 const KEY_PROFILE = 'totono-diet-profile-v1';
 const KEY_DAILY = 'totono-diet-daily-v2';
 
-const CAT_GROWTH_STAGES = [
-  { min: 0, next: 3, name: 'ちいさな子ねこ', emoji: '🐱', message: '最初の足あとを待っているよ。' },
-  { min: 3, next: 7, name: 'よちよち子ねこ', emoji: '🐱', message: '少しずつ、この場所に慣れてきたよ。' },
-  { min: 7, next: 14, name: '好奇心いっぱいの子ねこ', emoji: '🐈', message: '記録を見るのが楽しみになってきたみたい。' },
-  { min: 14, next: 30, name: 'すくすく若ねこ', emoji: '🐈', message: '毎日の足あとで、のびのび育っているよ。' },
-  { min: 30, next: null, name: 'りっぱなtotonoねこ', emoji: '🐈‍⬛', message: 'やさしい記録を重ねて、りっぱに育ったよ。' }
-];
 let pawCalendarCursor = null;
 
 // ============================================================
@@ -2451,53 +2406,12 @@ function dateKey(year, monthIndex, day) {
   return `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
-function currentGrowthStage(count) {
-  return CAT_GROWTH_STAGES.reduce((current, stage) => count >= stage.min ? stage : current, CAT_GROWTH_STAGES[0]);
-}
-
-function renderCatGrowth(recordedCount) {
-  const stage = currentGrowthStage(recordedCount);
-  const stageIndex = CAT_GROWTH_STAGES.indexOf(stage);
-  const cat = document.getElementById('growth-cat');
-  const name = document.getElementById('growth-name');
-  const status = document.getElementById('growth-status');
-  const count = document.getElementById('growth-count');
-  const track = document.getElementById('growth-track');
-  const progress = document.getElementById('growth-progress');
-  if (!cat || !name || !status || !count || !track || !progress) return;
-
-  cat.textContent = stage.emoji;
-  cat.dataset.stage = String(stageIndex);
-  name.textContent = stage.name;
-  count.textContent = `足あと ${recordedCount}日`;
-
-  if (stage.next === null) {
-    status.textContent = stage.message;
-    track.setAttribute('aria-valuemin', '0');
-    track.setAttribute('aria-valuemax', '1');
-    track.setAttribute('aria-valuenow', '1');
-    progress.style.width = '100%';
-    return;
-  }
-
-  const remaining = stage.next - recordedCount;
-  const nextName = CAT_GROWTH_STAGES[stageIndex + 1].name;
-  const stageSpan = stage.next - stage.min;
-  const stageProgress = Math.max(0, recordedCount - stage.min);
-  status.textContent = recordedCount === 0
-    ? stage.message
-    : `${stage.message} あと${remaining}日で「${nextName}」。`;
-  track.setAttribute('aria-valuemin', '0');
-  track.setAttribute('aria-valuemax', String(stageSpan));
-  track.setAttribute('aria-valuenow', String(stageProgress));
-  progress.style.width = `${Math.round(stageProgress / stageSpan * 100)}%`;
-}
-
 function renderPawCalendar() {
   const root = document.getElementById('paw-calendar');
   if (!root) return;
   if (!pawCalendarCursor || Number.isNaN(pawCalendarCursor.getTime())) pawCalendarCursor = monthCursorFromToday();
 
+  const logs = getDailyLogs();
   const recorded = new Set(recordedDailyDates());
   const year = pawCalendarCursor.getFullYear();
   const month = pawCalendarCursor.getMonth();
@@ -2519,13 +2433,15 @@ function renderPawCalendar() {
   for (let day = 1; day <= daysInMonth; day++) {
     const date = dateKey(year, month, day);
     const isRecorded = recorded.has(date);
+    const weight = typeof logs[date]?.weight === 'number' ? logs[date].weight : null;
     if (isRecorded) monthCount++;
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'calendar-day';
     if (date === today) button.classList.add('is-today');
     if (isRecorded) button.classList.add('is-recorded');
-    button.setAttribute('aria-label', `${year}年${month + 1}月${day}日${isRecorded ? '、記録あり' : '、記録なし'}`);
+    const weightLabel = weight === null ? '' : `、体重${weight.toFixed(1)}kg`;
+    button.setAttribute('aria-label', `${year}年${month + 1}月${day}日${isRecorded ? '、記録あり' : '、記録なし'}${weightLabel}。押すと入力画面を開きます`);
     button.onclick = () => openCalendarDate(date);
     const number = document.createElement('span');
     number.className = 'day-number';
@@ -2538,12 +2454,17 @@ function renderPawCalendar() {
       paw.textContent = '🐾';
       button.appendChild(paw);
     }
+    if (weight !== null) {
+      const weightText = document.createElement('span');
+      weightText.className = 'calendar-weight';
+      weightText.textContent = weight.toFixed(1);
+      button.appendChild(weightText);
+    }
     root.appendChild(button);
   }
 
   const monthCountEl = document.getElementById('paw-month-count');
   if (monthCountEl) monthCountEl.textContent = `${month + 1}月の足あと ${monthCount}日`;
-  renderCatGrowth(recorded.size);
 }
 
 function movePawCalendar(offset) {
